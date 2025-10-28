@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ChatMessage, Product, StockAlert } from '@/types';
+import { ChatMessage, Product, StockAlert, categoryNames } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
 import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 interface ChatInterfaceProps {
   products: Product[];
@@ -13,10 +14,10 @@ interface ChatInterfaceProps {
 export default function ChatInterface({ products, alerts }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
-  const [currentUser] = useState({ id: '1', name: 'Admin User' });
+  const [currentUser] = useState({ id: '1', name: 'Administrador' });
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll hacia abajo cuando llegan nuevos mensajes
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -25,24 +26,24 @@ export default function ChatInterface({ products, alerts }: ChatInterfaceProps) 
     scrollToBottom();
   }, [messages]);
 
-  // Initialize with welcome message
+  // Inicializar con mensaje de bienvenida
   useEffect(() => {
     const welcomeMessage: ChatMessage = {
       id: uuidv4(),
       userId: 'system',
-      userName: 'System',
-      content: 'Welcome to Pet Supply Inventory Chat! You can ask about products, check stock levels, or get alerts.',
+      userName: 'Sistema',
+      content: '¡Bienvenido al Chat de Inventario de Mascotas! Puedes consultar productos, verificar niveles de stock u obtener alertas.',
       timestamp: new Date(),
       type: 'system',
     };
     setMessages([welcomeMessage]);
 
-    // Add initial alerts as messages
+    // Agregar alertas iniciales como mensajes
     if (alerts.length > 0) {
       const alertMessages = alerts.map((alert): ChatMessage => ({
         id: uuidv4(),
         userId: 'system',
-        userName: 'Inventory Alert',
+        userName: 'Alerta de Inventario',
         content: alert.message,
         timestamp: alert.timestamp,
         type: 'alert',
@@ -65,7 +66,7 @@ export default function ChatInterface({ products, alerts }: ChatInterfaceProps) 
 
     setMessages(prev => [...prev, newMessage]);
 
-    // Process commands and queries
+    // Procesar comandos y consultas
     processMessageCommand(inputMessage);
 
     setInputMessage('');
@@ -74,31 +75,47 @@ export default function ChatInterface({ products, alerts }: ChatInterfaceProps) 
   const processMessageCommand = (message: string) => {
     const lowerMessage = message.toLowerCase();
 
-    // Search for products
-    if (lowerMessage.includes('search') || lowerMessage.includes('find') || lowerMessage.includes('look for')) {
+    // Buscar productos
+    if (lowerMessage.includes('buscar') || lowerMessage.includes('busca') || lowerMessage.includes('busque') ||
+        lowerMessage.includes('encontrar') || lowerMessage.includes('encuentra') || lowerMessage.includes('busco')) {
       handleProductSearch(message);
     }
-    // Check stock
-    else if (lowerMessage.includes('stock') || lowerMessage.includes('inventory') || lowerMessage.includes('available')) {
+    // Verificar stock
+    else if (lowerMessage.includes('stock') || lowerMessage.includes('inventario') ||
+             lowerMessage.includes('disponible') || lowerMessage.includes('hay') ||
+             lowerMessage.includes('tiene') || lowerMessage.includes('cuanto')) {
       handleStockCheck(message);
     }
-    // Low stock alerts
-    else if (lowerMessage.includes('low stock') || lowerMessage.includes('alert') || lowerMessage.includes('warning')) {
+    // Alertas de stock bajo
+    else if (lowerMessage.includes('bajo stock') || lowerMessage.includes('alerta') ||
+             lowerMessage.includes('advertencia') || lowerMessage.includes('agotando') ||
+             lowerMessage.includes('poco stock') || lowerMessage.includes('faltante')) {
       handleLowStockQuery();
     }
-    // List all products
-    else if (lowerMessage.includes('list all') || lowerMessage.includes('show all') || lowerMessage.includes('all products')) {
+    // Listar todos los productos
+    else if (lowerMessage.includes('listar') || lowerMessage.includes('mostrar') ||
+             lowerMessage.includes('todos') || lowerMessage.includes('lista') ||
+             lowerMessage.includes('ver todos')) {
       handleListAllProducts();
     }
-    // Help command
-    else if (lowerMessage.includes('help') || lowerMessage.includes('commands')) {
+    // Comando de ayuda
+    else if (lowerMessage.includes('ayuda') || lowerMessage.includes('comandos') || lowerMessage.includes('help')) {
       handleHelpCommand();
     }
   };
 
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(price);
+  };
+
   const handleProductSearch = (query: string) => {
     const searchTerms = query.toLowerCase().split(' ').filter(word =>
-      !['search', 'find', 'look', 'for', 'the', 'a', 'an'].includes(word)
+      !['buscar', 'busca', 'busque', 'encontrar', 'encuentra', 'el', 'la', 'los', 'las', 'un', 'una'].includes(word)
     );
 
     const results = products.filter(product =>
@@ -107,22 +124,22 @@ export default function ChatInterface({ products, alerts }: ChatInterfaceProps) 
 
     let responseContent = '';
     if (results.length > 0) {
-      responseContent = `Found ${results.length} product(s):\n\n` +
+      responseContent = `Encontré ${results.length} producto(s):\n\n` +
         results.map(p =>
           `📦 ${p.name}\n` +
-          `   Category: ${p.category}\n` +
-          `   Stock: ${p.stock} units\n` +
-          `   Price: $${p.price.toFixed(2)}\n` +
-          `   ${p.stock <= p.minStock ? '⚠️ LOW STOCK' : '✅ In Stock'}`
+          `   Categoría: ${categoryNames[p.category]}\n` +
+          `   Stock: ${p.stock} unidades\n` +
+          `   Precio: ${formatPrice(p.price)}\n` +
+          `   ${p.stock <= p.minStock ? '⚠️ STOCK BAJO' : '✅ Disponible'}`
         ).join('\n\n');
     } else {
-      responseContent = 'No products found matching your search. Try different keywords or use "list all" to see all products.';
+      responseContent = 'No se encontraron productos que coincidan con tu búsqueda. Intenta con diferentes palabras clave o usa "listar todos" para ver todos los productos.';
     }
 
     const responseMessage: ChatMessage = {
       id: uuidv4(),
       userId: 'system',
-      userName: 'Inventory Bot',
+      userName: 'Bot de Inventario',
       content: responseContent,
       timestamp: new Date(),
       type: 'query',
@@ -146,18 +163,18 @@ export default function ChatInterface({ products, alerts }: ChatInterfaceProps) 
     let responseContent = '';
     if (productMatches.length > 0) {
       responseContent = productMatches.map(p =>
-        `📊 ${p.name}: ${p.stock} units in stock\n` +
-        `   Min required: ${p.minStock} units\n` +
-        `   Status: ${p.stock === 0 ? '🔴 OUT OF STOCK' : p.stock <= p.minStock ? '🟡 LOW STOCK' : '🟢 GOOD'}`
+        `📊 ${p.name}: ${p.stock} unidades en stock\n` +
+        `   Mínimo requerido: ${p.minStock} unidades\n` +
+        `   Estado: ${p.stock === 0 ? '🔴 AGOTADO' : p.stock <= p.minStock ? '🟡 STOCK BAJO' : '🟢 BUENO'}`
       ).join('\n\n');
     } else {
-      responseContent = 'Please specify a product name to check stock levels.';
+      responseContent = 'Por favor especifica el nombre del producto para verificar los niveles de stock.';
     }
 
     const responseMessage: ChatMessage = {
       id: uuidv4(),
       userId: 'system',
-      userName: 'Inventory Bot',
+      userName: 'Bot de Inventario',
       content: responseContent,
       timestamp: new Date(),
       type: 'query',
@@ -177,21 +194,21 @@ export default function ChatInterface({ products, alerts }: ChatInterfaceProps) 
 
     let responseContent = '';
     if (lowStockProducts.length > 0) {
-      responseContent = `⚠️ ${lowStockProducts.length} product(s) with low stock:\n\n` +
+      responseContent = `⚠️ ${lowStockProducts.length} producto(s) con stock bajo:\n\n` +
         lowStockProducts.map(p =>
           `${p.stock === 0 ? '🔴' : '🟡'} ${p.name}\n` +
-          `   Current: ${p.stock} units\n` +
-          `   Required: ${p.minStock} units\n` +
-          `   ${p.stock === 0 ? 'URGENT: Restock immediately!' : 'Restock recommended'}`
+          `   Actual: ${p.stock} unidades\n` +
+          `   Requerido: ${p.minStock} unidades\n` +
+          `   ${p.stock === 0 ? '¡URGENTE: Reabastecer inmediatamente!' : 'Se recomienda reabastecer'}`
         ).join('\n\n');
     } else {
-      responseContent = '✅ All products are adequately stocked!';
+      responseContent = '✅ ¡Todos los productos tienen stock adecuado!';
     }
 
     const responseMessage: ChatMessage = {
       id: uuidv4(),
       userId: 'system',
-      userName: 'Inventory Bot',
+      userName: 'Bot de Inventario',
       content: responseContent,
       timestamp: new Date(),
       type: 'alert',
@@ -207,17 +224,17 @@ export default function ChatInterface({ products, alerts }: ChatInterfaceProps) 
   };
 
   const handleListAllProducts = () => {
-    const responseContent = `📋 All Products (${products.length} total):\n\n` +
+    const responseContent = `📋 Todos los Productos (${products.length} en total):\n\n` +
       products.map((p, idx) =>
         `${idx + 1}. ${p.name}\n` +
-        `   Category: ${p.category} | Stock: ${p.stock} | Price: $${p.price.toFixed(2)}\n` +
-        `   ${p.stock === 0 ? '🔴 OUT' : p.stock <= p.minStock ? '🟡 LOW' : '🟢 OK'}`
+        `   Categoría: ${categoryNames[p.category]} | Stock: ${p.stock} | Precio: ${formatPrice(p.price)}\n` +
+        `   ${p.stock === 0 ? '🔴 AGOTADO' : p.stock <= p.minStock ? '🟡 BAJO' : '🟢 OK'}`
       ).join('\n\n');
 
     const responseMessage: ChatMessage = {
       id: uuidv4(),
       userId: 'system',
-      userName: 'Inventory Bot',
+      userName: 'Bot de Inventario',
       content: responseContent,
       timestamp: new Date(),
       type: 'query',
@@ -229,18 +246,18 @@ export default function ChatInterface({ products, alerts }: ChatInterfaceProps) 
   };
 
   const handleHelpCommand = () => {
-    const responseContent = `🤖 Available Commands:\n\n` +
-      `• "search [product name]" - Search for products\n` +
-      `• "stock [product name]" - Check stock levels\n` +
-      `• "low stock" - View all low stock items\n` +
-      `• "list all" - Show all products\n` +
-      `• "help" - Show this help message\n\n` +
-      `You can also just type naturally and I'll try to help!`;
+    const responseContent = `🤖 Comandos Disponibles:\n\n` +
+      `• "buscar [producto]" - Buscar productos\n` +
+      `• "stock [producto]" - Verificar niveles de stock\n` +
+      `• "bajo stock" - Ver productos con stock bajo\n` +
+      `• "listar todos" - Mostrar todos los productos\n` +
+      `• "ayuda" - Mostrar este mensaje de ayuda\n\n` +
+      `¡También puedes escribir de forma natural y trataré de ayudarte!`;
 
     const responseMessage: ChatMessage = {
       id: uuidv4(),
       userId: 'system',
-      userName: 'Inventory Bot',
+      userName: 'Bot de Inventario',
       content: responseContent,
       timestamp: new Date(),
       type: 'system',
@@ -273,13 +290,13 @@ export default function ChatInterface({ products, alerts }: ChatInterfaceProps) 
 
   return (
     <div className="flex flex-col h-full bg-white rounded-lg shadow-lg overflow-hidden">
-      {/* Chat Header */}
+      {/* Encabezado del Chat */}
       <div className="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-4">
-        <h2 className="text-xl font-semibold">Inventory Chat</h2>
-        <p className="text-sm text-primary-100 mt-1">Ask about products, check stock, get alerts</p>
+        <h2 className="text-xl font-semibold">Chat de Inventario</h2>
+        <p className="text-sm text-primary-100 mt-1">Consulta productos, verifica stock, recibe alertas</p>
       </div>
 
-      {/* Messages Area */}
+      {/* Área de Mensajes */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
         {messages.map((message) => (
           <div
@@ -291,7 +308,7 @@ export default function ChatInterface({ products, alerts }: ChatInterfaceProps) 
             <div className="flex items-start justify-between mb-2">
               <span className="font-semibold text-sm">{message.userName}</span>
               <span className="text-xs opacity-75">
-                {format(message.timestamp, 'HH:mm')}
+                {format(message.timestamp, 'HH:mm', { locale: es })}
               </span>
             </div>
             <div className="text-sm whitespace-pre-wrap">{message.content}</div>
@@ -300,7 +317,7 @@ export default function ChatInterface({ products, alerts }: ChatInterfaceProps) 
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Area */}
+      {/* Área de Entrada */}
       <div className="border-t border-gray-200 p-4 bg-white">
         <div className="flex space-x-2">
           <input
@@ -308,7 +325,7 @@ export default function ChatInterface({ products, alerts }: ChatInterfaceProps) 
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Type a message or command (try 'help')..."
+            placeholder="Escribe un mensaje o comando (prueba 'ayuda')..."
             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
           />
           <button
@@ -316,11 +333,11 @@ export default function ChatInterface({ products, alerts }: ChatInterfaceProps) 
             disabled={!inputMessage.trim()}
             className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            Send
+            Enviar
           </button>
         </div>
         <div className="mt-2 text-xs text-gray-500">
-          Try: "search dog food", "stock cat litter", "low stock", "list all"
+          Prueba: "buscar alimento perros", "stock arena gatos", "bajo stock", "listar todos"
         </div>
       </div>
     </div>

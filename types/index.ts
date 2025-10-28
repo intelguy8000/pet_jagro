@@ -19,6 +19,16 @@ export interface Product {
   lastUpdated: Date;
 }
 
+// Traducción de categorías
+export const categoryNames: Record<Product['category'], string> = {
+  food: 'Alimento',
+  toys: 'Juguetes',
+  accessories: 'Accesorios',
+  healthcare: 'Salud',
+  grooming: 'Aseo',
+  other: 'Otros'
+};
+
 export interface ChatMessage {
   id: string;
   userId: string;

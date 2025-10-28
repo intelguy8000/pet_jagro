@@ -1,6 +1,6 @@
 'use client';
 
-import { Product } from '@/types';
+import { Product, categoryNames } from '@/types';
 import { useState } from 'react';
 
 interface InventoryPanelProps {
@@ -12,10 +12,19 @@ export default function InventoryPanel({ products, setProducts }: InventoryPanel
   const [filter, setFilter] = useState<'all' | 'low' | 'out'>('all');
   const [sortBy, setSortBy] = useState<'name' | 'stock' | 'category'>('name');
 
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(price);
+  };
+
   const getFilteredProducts = () => {
     let filtered = [...products];
 
-    // Apply filter
+    // Aplicar filtro
     switch (filter) {
       case 'low':
         filtered = filtered.filter(p => p.stock > 0 && p.stock <= p.minStock);
@@ -25,7 +34,7 @@ export default function InventoryPanel({ products, setProducts }: InventoryPanel
         break;
     }
 
-    // Apply sort
+    // Aplicar ordenamiento
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'name':
@@ -44,9 +53,9 @@ export default function InventoryPanel({ products, setProducts }: InventoryPanel
 
   const getStockStatus = (product: Product) => {
     if (product.stock === 0) {
-      return { label: 'OUT', color: 'bg-red-500', textColor: 'text-red-700' };
+      return { label: 'AGOTADO', color: 'bg-red-500', textColor: 'text-red-700' };
     } else if (product.stock <= product.minStock) {
-      return { label: 'LOW', color: 'bg-yellow-500', textColor: 'text-yellow-700' };
+      return { label: 'BAJO', color: 'bg-yellow-500', textColor: 'text-yellow-700' };
     }
     return { label: 'OK', color: 'bg-green-500', textColor: 'text-green-700' };
   };
@@ -67,32 +76,32 @@ export default function InventoryPanel({ products, setProducts }: InventoryPanel
 
   return (
     <div className="flex flex-col h-full bg-white rounded-lg shadow-lg overflow-hidden">
-      {/* Panel Header */}
+      {/* Encabezado del Panel */}
       <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white px-6 py-4">
-        <h2 className="text-xl font-semibold">Inventory Overview</h2>
-        <p className="text-sm text-indigo-100 mt-1">{products.length} total products</p>
+        <h2 className="text-xl font-semibold">Resumen de Inventario</h2>
+        <p className="text-sm text-indigo-100 mt-1">{products.length} productos en total</p>
       </div>
 
-      {/* Statistics */}
+      {/* Estadísticas */}
       <div className="grid grid-cols-3 gap-2 p-4 bg-gray-50 border-b border-gray-200">
         <div className="bg-white rounded-lg p-3 text-center shadow-sm">
-          <div className="text-xs text-gray-600 mb-1">Total Value</div>
-          <div className="text-lg font-bold text-gray-900">${getTotalValue().toFixed(0)}</div>
+          <div className="text-xs text-gray-600 mb-1">Valor Total</div>
+          <div className="text-lg font-bold text-gray-900">{formatPrice(getTotalValue())}</div>
         </div>
         <div className="bg-yellow-50 rounded-lg p-3 text-center shadow-sm">
-          <div className="text-xs text-yellow-700 mb-1">Low Stock</div>
+          <div className="text-xs text-yellow-700 mb-1">Stock Bajo</div>
           <div className="text-lg font-bold text-yellow-900">{getLowStockCount()}</div>
         </div>
         <div className="bg-red-50 rounded-lg p-3 text-center shadow-sm">
-          <div className="text-xs text-red-700 mb-1">Out of Stock</div>
+          <div className="text-xs text-red-700 mb-1">Agotados</div>
           <div className="text-lg font-bold text-red-900">{getOutOfStockCount()}</div>
         </div>
       </div>
 
-      {/* Filters and Sort */}
+      {/* Filtros y Ordenamiento */}
       <div className="p-4 border-b border-gray-200 bg-white space-y-3">
         <div>
-          <label className="text-xs font-medium text-gray-700 mb-1 block">Filter</label>
+          <label className="text-xs font-medium text-gray-700 mb-1 block">Filtrar</label>
           <div className="flex space-x-2">
             <button
               onClick={() => setFilter('all')}
@@ -102,7 +111,7 @@ export default function InventoryPanel({ products, setProducts }: InventoryPanel
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              All
+              Todos
             </button>
             <button
               onClick={() => setFilter('low')}
@@ -112,7 +121,7 @@ export default function InventoryPanel({ products, setProducts }: InventoryPanel
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Low
+              Bajos
             </button>
             <button
               onClick={() => setFilter('out')}
@@ -122,33 +131,33 @@ export default function InventoryPanel({ products, setProducts }: InventoryPanel
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              Out
+              Agotados
             </button>
           </div>
         </div>
 
         <div>
-          <label className="text-xs font-medium text-gray-700 mb-1 block">Sort By</label>
+          <label className="text-xs font-medium text-gray-700 mb-1 block">Ordenar por</label>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
             className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
-            <option value="name">Name</option>
-            <option value="stock">Stock Level</option>
-            <option value="category">Category</option>
+            <option value="name">Nombre</option>
+            <option value="stock">Nivel de Stock</option>
+            <option value="category">Categoría</option>
           </select>
         </div>
       </div>
 
-      {/* Products List */}
+      {/* Lista de Productos */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
         {filteredProducts.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
             </svg>
-            <p className="mt-2">No products match the filter</p>
+            <p className="mt-2">No hay productos que coincidan con el filtro</p>
           </div>
         ) : (
           filteredProducts.map((product) => {
@@ -169,8 +178,8 @@ export default function InventoryPanel({ products, setProducts }: InventoryPanel
 
                 <div className="space-y-1 text-xs text-gray-600">
                   <div className="flex justify-between">
-                    <span>Category:</span>
-                    <span className="font-medium text-gray-900 capitalize">{product.category}</span>
+                    <span>Categoría:</span>
+                    <span className="font-medium text-gray-900">{categoryNames[product.category]}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Stock:</span>
@@ -179,18 +188,18 @@ export default function InventoryPanel({ products, setProducts }: InventoryPanel
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Price:</span>
-                    <span className="font-medium text-gray-900">${product.price.toFixed(2)}</span>
+                    <span>Precio:</span>
+                    <span className="font-medium text-gray-900">{formatPrice(product.price)}</span>
                   </div>
                   {product.supplier && (
                     <div className="flex justify-between">
-                      <span>Supplier:</span>
+                      <span>Proveedor:</span>
                       <span className="font-medium text-gray-900 text-right">{product.supplier}</span>
                     </div>
                   )}
                 </div>
 
-                {/* Stock Progress Bar */}
+                {/* Barra de Progreso de Stock */}
                 <div className="mt-3">
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
