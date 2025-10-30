@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Chat de Inventario para Mascotas",
-  description: "Sistema de chat en tiempo real para gestión de inventario de suministros para mascotas",
+  title: "J Agro - Sistema de Picking",
+  description: "Sistema de picking y trazabilidad para gestión de pedidos de J Agro",
 };
 
 export default function RootLayout({
