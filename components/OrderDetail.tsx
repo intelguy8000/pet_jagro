@@ -85,14 +85,14 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
       <div className="flex items-center justify-between">
         <button
           onClick={onBack}
-          className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-semibold"
+          className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold"
         >
           <span>←</span>
           <span>Volver a Pedidos</span>
         </button>
 
         {order.status === 'completed' && (
-          <div className="flex items-center space-x-2 bg-green-100 text-green-800 px-4 py-2 rounded-lg font-semibold">
+          <div className="flex items-center space-x-2 bg-green-100 dark:bg-green-900 dark:bg-opacity-30 text-green-800 dark:text-green-300 px-4 py-2 rounded-lg font-semibold">
             <span>✅</span>
             <span>Pedido Completado</span>
           </div>
@@ -100,20 +100,20 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
       </div>
 
       {/* Información del pedido */}
-      <div className="bg-white rounded-lg shadow-lg p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-blue-600 mb-2">{order.orderNumber}</h1>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">{order.customer.name}</h2>
-            <div className="space-y-1 text-gray-600">
+            <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">{order.orderNumber}</h1>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">{order.customer.name}</h2>
+            <div className="space-y-1 text-gray-600 dark:text-gray-300">
               <div>📞 {order.customer.phone}</div>
               <div>📍 {order.customer.address}</div>
             </div>
           </div>
 
           <div className="text-right">
-            <div className="text-sm text-gray-600 mb-1">Total</div>
-            <div className="text-2xl font-bold text-green-600">{formatPrice(order.totalValue)}</div>
+            <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Total</div>
+            <div className="text-2xl font-bold text-green-600 dark:text-green-400">{formatPrice(order.totalValue)}</div>
           </div>
         </div>
 
@@ -121,12 +121,12 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
         {order.status !== 'pending' && (
           <div className="mb-6">
             <div className="flex items-center justify-between text-sm mb-2">
-              <span className="font-semibold">Progreso del Picking</span>
-              <span className="text-blue-600 font-bold">{Math.round(progress)}%</span>
+              <span className="font-semibold dark:text-gray-200">Progreso del Picking</span>
+              <span className="text-blue-600 dark:text-blue-400 font-bold">{Math.round(progress)}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-4">
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4">
               <div
-                className="bg-blue-600 h-4 rounded-full transition-all duration-500"
+                className="bg-blue-600 dark:bg-blue-500 h-4 rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -137,7 +137,7 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
         {order.status === 'pending' && (
           <button
             onClick={handleAcceptOrder}
-            className="w-full py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-bold text-lg"
+            className="w-full py-4 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors font-bold text-lg"
           >
             ✓ Aceptar Pedido y Comenzar Picking
           </button>
@@ -145,8 +145,8 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
       </div>
 
       {/* Lista de items */}
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <h3 className="text-2xl font-bold mb-4">Items del Pedido</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+        <h3 className="text-2xl font-bold mb-4 dark:text-gray-100">Items del Pedido</h3>
 
         <div className="space-y-4">
           {order.items.map((item) => (
@@ -154,44 +154,44 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
               key={item.id}
               className={`border-2 rounded-lg p-4 transition-all ${
                 item.scanned
-                  ? 'border-green-400 bg-green-50'
+                  ? 'border-green-400 dark:border-green-500 bg-green-50 dark:bg-green-900 dark:bg-opacity-20'
                   : order.status === 'in_progress'
-                  ? 'border-blue-300'
-                  : 'border-gray-200'
+                  ? 'border-blue-300 dark:border-blue-500 dark:bg-gray-700'
+                  : 'border-gray-200 dark:border-gray-600 dark:bg-gray-700'
               }`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-2">
+                  <div className="flex items-center space-x-2 mb-3">
                     {item.scanned && <span className="text-2xl">✅</span>}
-                    <h4 className="text-lg font-semibold">{item.product.name}</h4>
+                    <h4 className="text-xl font-bold text-gray-900 dark:text-gray-100">{item.product.name}</h4>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 text-sm mb-3">
                     <div>
-                      <span className="text-gray-600">Categoría: </span>
-                      <span className="font-medium">{categoryNames[item.product.category]}</span>
+                      <span className="text-gray-600 dark:text-gray-300">Categoría: </span>
+                      <span className="font-medium dark:text-gray-200">{categoryNames[item.product.category]}</span>
                     </div>
                     <div>
-                      <span className="text-gray-600">Código: </span>
-                      <span className="font-mono font-medium">{item.product.barcode}</span>
+                      <span className="text-gray-600 dark:text-gray-300">Código: </span>
+                      <span className="font-mono font-medium dark:text-gray-200">{item.product.barcode}</span>
                     </div>
                     <div>
-                      <span className="text-gray-600">Cantidad: </span>
-                      <span className="font-bold text-blue-600">
+                      <span className="text-gray-600 dark:text-gray-300">Cantidad: </span>
+                      <span className="font-bold text-blue-600 dark:text-blue-400">
                         {item.scannedQuantity} / {item.quantity}
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-600">Stock disponible: </span>
-                      <span className={`font-bold ${item.product.stock > item.quantity ? 'text-green-600' : 'text-orange-600'}`}>
+                      <span className="text-gray-600 dark:text-gray-300">Stock disponible: </span>
+                      <span className={`font-bold ${item.product.stock > item.quantity ? 'text-green-600 dark:text-green-400' : 'text-orange-600 dark:text-orange-400'}`}>
                         {item.product.stock} unidades
                       </span>
                     </div>
                   </div>
 
                   {item.product.stock < item.quantity && (
-                    <div className="bg-orange-100 border border-orange-300 text-orange-800 px-3 py-2 rounded text-sm mb-2">
+                    <div className="bg-orange-100 dark:bg-orange-900 dark:bg-opacity-30 border border-orange-300 dark:border-orange-600 text-orange-800 dark:text-orange-300 px-3 py-2 rounded text-sm mb-2">
                       ⚠️ Stock insuficiente. Disponible: {item.product.stock}
                     </div>
                   )}
@@ -200,7 +200,7 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
                 {order.status === 'in_progress' && !item.scanned && (
                   <button
                     onClick={() => handleStartScanning(item)}
-                    className="ml-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+                    className="ml-4 px-6 py-3 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-semibold"
                   >
                     📷 Escanear
                   </button>
