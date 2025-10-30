@@ -10,7 +10,7 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>(mockProducts);
   const [alerts, setAlerts] = useState<StockAlert[]>([]);
 
-  // Check for low stock on mount and generate alerts
+  // Verificar stock bajo al cargar y generar alertas
   useEffect(() => {
     const lowStockAlerts = products
       .filter(p => p.stock <= p.minStock)
@@ -18,8 +18,8 @@ export default function Home() {
         id: `alert-${product.id}`,
         product,
         message: product.stock === 0
-          ? `${product.name} is OUT OF STOCK!`
-          : `${product.name} is running low (${product.stock} left)`,
+          ? `${product.name} está AGOTADO!`
+          : `${product.name} tiene stock bajo (quedan ${product.stock})`,
         severity: product.stock === 0 ? 'out' : product.stock < (product.minStock / 2) ? 'critical' : 'low',
         timestamp: new Date(),
         acknowledged: false,
