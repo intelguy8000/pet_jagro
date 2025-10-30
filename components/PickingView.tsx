@@ -2,13 +2,16 @@
 
 import { useState } from 'react';
 import { Order, orderStatusNames } from '@/types';
-import { mockOrders } from '@/lib/mockData';
 import OrderDetail from './OrderDetail';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-export default function PickingView() {
-  const [orders, setOrders] = useState<Order[]>(mockOrders);
+interface PickingViewProps {
+  orders: Order[];
+  onUpdateOrder: (order: Order) => void;
+}
+
+export default function PickingView({ orders, onUpdateOrder }: PickingViewProps) {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   const formatPrice = (price: number) => {
@@ -47,8 +50,12 @@ export default function PickingView() {
         order={selectedOrder}
         onBack={() => setSelectedOrder(null)}
         onUpdate={(updatedOrder) => {
-          setOrders(orders.map(o => o.id === updatedOrder.id ? updatedOrder : o));
-          setSelectedOrder(null);
+          onUpdateOrder(updatedOrder);
+          if (updatedOrder.status === 'ready_for_billing') {
+            setSelectedOrder(null); // Cerrar si se envió a facturación
+          } else {
+            setSelectedOrder(updatedOrder); // Actualizar vista si sigue en picking
+          }
         }}
       />
     );

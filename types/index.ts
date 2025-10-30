@@ -31,12 +31,14 @@ export const categoryNames: Record<Product['category'], string> = {
 };
 
 // Estados del pedido
-export type OrderStatus = 'pending' | 'in_progress' | 'completed' | 'cancelled';
+export type OrderStatus = 'pending' | 'in_progress' | 'completed' | 'ready_for_billing' | 'billed' | 'cancelled';
 
 export const orderStatusNames: Record<OrderStatus, string> = {
   pending: 'Pendiente',
   in_progress: 'En Curso',
   completed: 'Completado',
+  ready_for_billing: 'Listo para Facturar',
+  billed: 'Facturado',
   cancelled: 'Cancelado'
 };
 

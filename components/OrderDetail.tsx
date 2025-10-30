@@ -33,6 +33,16 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
     setOrder(updatedOrder);
   };
 
+  const handleSendToBilling = () => {
+    const billingOrder = {
+      ...order,
+      status: 'ready_for_billing' as const,
+    };
+    setOrder(billingOrder);
+    onUpdate(billingOrder);
+    setTimeout(() => onBack(), 1000); // Volver a la lista después de 1 segundo
+  };
+
   const handleStartScanning = (item: OrderItem) => {
     setCurrentItem(item);
     setShowScanner(true);
@@ -68,7 +78,7 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
           completedAt: new Date(),
         };
         setOrder(completedOrder);
-        setTimeout(() => onUpdate(completedOrder), 1500);
+        onUpdate(completedOrder); // Actualizar inmediatamente sin cerrar
       }
     } else {
       alert('❌ Código incorrecto. Por favor escanea el producto correcto.');
@@ -140,6 +150,16 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
             className="w-full py-4 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors font-bold text-lg"
           >
             ✓ Aceptar Pedido y Comenzar Picking
+          </button>
+        )}
+
+        {/* Botón pasar a facturación */}
+        {order.status === 'completed' && (
+          <button
+            onClick={handleSendToBilling}
+            className="w-full py-4 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-bold text-lg"
+          >
+            💰 Pasar a Facturación
           </button>
         )}
       </div>

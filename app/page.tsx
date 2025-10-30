@@ -4,13 +4,21 @@ import { useState } from 'react';
 import Image from 'next/image';
 import PickingView from '@/components/PickingView';
 import TrackingView from '@/components/TrackingView';
+import FacturacionView from '@/components/FacturacionView';
 import { useTheme } from '@/contexts/ThemeContext';
+import { Order } from '@/types';
+import { mockOrders } from '@/lib/mockData';
 
-type Tab = 'picking' | 'tracking';
+type Tab = 'picking' | 'tracking' | 'billing';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>('picking');
   const { theme, toggleTheme } = useTheme();
+  const [orders, setOrders] = useState<Order[]>(mockOrders);
+
+  const handleUpdateOrder = (updatedOrder: Order) => {
+    setOrders(orders.map(o => o.id === updatedOrder.id ? updatedOrder : o));
+  };
 
   return (
     <main className="flex min-h-screen flex-col bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800">
@@ -72,6 +80,16 @@ export default function Home() {
               📦 Picking
             </button>
             <button
+              onClick={() => setActiveTab('billing')}
+              className={`px-6 py-3 font-semibold transition-all border-b-4 ${
+                activeTab === 'billing'
+                  ? 'border-blue-600 text-blue-600 bg-blue-50 dark:bg-blue-900 dark:text-blue-300'
+                  : 'border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700'
+              }`}
+            >
+              💰 Facturación
+            </button>
+            <button
               onClick={() => setActiveTab('tracking')}
               className={`px-6 py-3 font-semibold transition-all border-b-4 ${
                 activeTab === 'tracking'
@@ -87,7 +105,9 @@ export default function Home() {
 
       {/* Contenido según tab activo */}
       <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {activeTab === 'picking' ? <PickingView /> : <TrackingView />}
+        {activeTab === 'picking' && <PickingView orders={orders} onUpdateOrder={handleUpdateOrder} />}
+        {activeTab === 'billing' && <FacturacionView orders={orders} onUpdateOrder={handleUpdateOrder} />}
+        {activeTab === 'tracking' && <TrackingView orders={orders} />}
       </div>
     </main>
   );

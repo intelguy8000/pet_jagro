@@ -2,9 +2,15 @@
 
 import { useState } from 'react';
 import { mockProducts, mockPurchaseSuggestions } from '@/lib/mockData';
-import { Product, PurchaseSuggestion, categoryNames } from '@/types';
+import { Product, PurchaseSuggestion, categoryNames, Order } from '@/types';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
-export default function TrackingView() {
+interface TrackingViewProps {
+  orders: Order[];
+}
+
+export default function TrackingView({ orders }: TrackingViewProps) {
   const [products] = useState<Product[]>(mockProducts);
   const [suggestions] = useState<PurchaseSuggestion[]>(mockPurchaseSuggestions);
   const [filter, setFilter] = useState<'all' | 'low' | 'out'>('all');
@@ -32,6 +38,8 @@ export default function TrackingView() {
   const lowStockCount = products.filter(p => p.stock > 0 && p.stock <= p.minStock).length;
   const outOfStockCount = products.filter(p => p.stock === 0).length;
   const totalValue = products.reduce((sum, p) => sum + (p.stock * p.price), 0);
+
+  const completedOrders = orders.filter(o => o.status === 'completed');
 
   return (
     <div className="space-y-6">
@@ -124,6 +132,46 @@ export default function TrackingView() {
           </div>
         </div>
       </div>
+
+      {/* Pedidos Terminados */}
+      {completedOrders.length > 0 && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+          <h2 className="text-2xl font-bold mb-4 text-green-600 dark:text-green-400">
+            ✓ Pedidos Completados (Listos para Facturar)
+          </h2>
+          <div className="space-y-3">
+            {completedOrders.map((order) => (
+              <div
+                key={order.id}
+                className="border-2 border-green-300 dark:border-green-600 bg-green-50 dark:bg-green-900 dark:bg-opacity-20 rounded-lg p-4"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-1">
+                      <span className="font-bold text-lg dark:text-gray-100">{order.orderNumber}</span>
+                      <span className="text-gray-600 dark:text-gray-300">- {order.customer.name}</span>
+                    </div>
+                    <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-300">
+                      <span>{order.items.length} items</span>
+                      <span className="font-bold text-green-600 dark:text-green-400">
+                        {formatPrice(order.totalValue)}
+                      </span>
+                      {order.completedAt && (
+                        <span>
+                          Completado: {format(order.completedAt, "d 'de' MMMM, HH:mm", { locale: es })}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 dark:bg-opacity-30 text-blue-800 dark:text-blue-300 rounded-full text-xs font-semibold">
+                    PENDIENTE FACTURACIÓN
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Inventario Completo */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
