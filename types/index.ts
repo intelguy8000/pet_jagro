@@ -1,9 +1,9 @@
-// Types for the Pet Supply Inventory Chat System
+// Types for J Agro Picking System
 
 export interface User {
   id: string;
   name: string;
-  role: 'admin' | 'staff' | 'customer';
+  role: 'admin' | 'picker' | 'supervisor';
   avatar?: string;
   online: boolean;
 }
@@ -16,6 +16,7 @@ export interface Product {
   minStock: number;
   price: number;
   supplier?: string;
+  barcode: string; // Código de barras para escaneo
   lastUpdated: Date;
 }
 
@@ -28,6 +29,45 @@ export const categoryNames: Record<Product['category'], string> = {
   grooming: 'Aseo',
   other: 'Otros'
 };
+
+// Estados del pedido
+export type OrderStatus = 'pending' | 'in_progress' | 'completed' | 'cancelled';
+
+export const orderStatusNames: Record<OrderStatus, string> = {
+  pending: 'Pendiente',
+  in_progress: 'En Curso',
+  completed: 'Completado',
+  cancelled: 'Cancelado'
+};
+
+// Item dentro de un pedido
+export interface OrderItem {
+  id: string;
+  product: Product;
+  quantity: number;
+  scanned: boolean; // Si ya fue escaneado
+  scannedQuantity: number; // Cantidad escaneada
+  scannedAt?: Date;
+}
+
+// Pedido completo
+export interface Order {
+  id: string;
+  orderNumber: string;
+  customer: {
+    name: string;
+    phone?: string;
+    address?: string;
+  };
+  items: OrderItem[];
+  status: OrderStatus;
+  createdAt: Date;
+  assignedTo?: string; // ID del picker asignado
+  assignedAt?: Date;
+  completedAt?: Date;
+  totalValue: number;
+  priority: 'low' | 'medium' | 'high';
+}
 
 export interface ChatMessage {
   id: string;
@@ -55,10 +95,12 @@ export interface StockAlert {
   acknowledged: boolean;
 }
 
-export interface ChatRoom {
+// Sugerencia de compra
+export interface PurchaseSuggestion {
   id: string;
-  name: string;
-  users: User[];
-  messages: ChatMessage[];
-  lastActivity: Date;
+  product: Product;
+  suggestedQuantity: number;
+  reason: string;
+  urgency: 'low' | 'medium' | 'high';
+  estimatedCost: number;
 }
