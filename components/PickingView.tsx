@@ -112,7 +112,7 @@ export default function PickingView() {
                     </div>
 
                     <div className="flex items-center space-x-4">
-                      <span className="text-sm bg-gray-100 dark:bg-gray-600 dark:text-gray-200 px-3 py-1 rounded-full">
+                      <span className="text-sm bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-1 rounded-full">
                         {order.items.length} items
                       </span>
                       <span className="text-lg font-bold text-green-600 dark:text-green-400">
