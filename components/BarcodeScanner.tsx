@@ -28,6 +28,9 @@ export default function BarcodeScanner({
     /iPhone|iPad|iPod/.test(navigator.userAgent) &&
     /CriOS/.test(navigator.userAgent);
 
+  // Detectar cualquier iOS
+  const isIOS = typeof window !== 'undefined' && /iPhone|iPad|iPod/.test(navigator.userAgent);
+
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (manualCode === expectedBarcode) {
@@ -41,6 +44,31 @@ export default function BarcodeScanner({
   // Simular escaneo automático con el código correcto para demo
   const handleQuickScan = () => {
     onScanSuccess(expectedBarcode);
+  };
+
+  // Manejo de escaneo nativo para iOS usando input file
+  const handleNativeCapture = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setError('');
+
+      // Usar html5-qrcode para decodificar la imagen
+      const { default: Html5QrcodeScanner } = await import('html5-qrcode');
+      const html5QrCode = new Html5QrcodeScanner(scannerIdRef.current, { fps: 10, qrbox: 250 }, false);
+
+      html5QrCode.scanFile(file, true)
+        .then((decodedText) => {
+          onScanSuccess(decodedText);
+        })
+        .catch(() => {
+          setError('No se pudo leer el código de barras. Intenta con mejor iluminación o enfoque.');
+        });
+    } catch (err) {
+      console.error('Error al procesar imagen:', err);
+      setError('Error al procesar la imagen. Intenta de nuevo.');
+    }
   };
 
   // Iniciar escaneo real con cámara
@@ -147,16 +175,15 @@ export default function BarcodeScanner({
           </button>
         </div>
 
-        {/* Advertencia para Chrome iOS */}
-        {isIOSChrome && (
-          <div className="mb-4 bg-orange-100 dark:bg-orange-900 dark:bg-opacity-30 border-2 border-orange-400 dark:border-orange-600 rounded-lg p-3 sm:p-4">
+        {/* Información para iOS */}
+        {isIOS && (
+          <div className="mb-4 bg-blue-100 dark:bg-blue-900 dark:bg-opacity-30 border-2 border-blue-400 dark:border-blue-600 rounded-lg p-3 sm:p-4">
             <div className="flex items-start gap-3">
-              <span className="text-2xl">⚠️</span>
+              <span className="text-2xl">ℹ️</span>
               <div className="flex-1">
-                <div className="font-bold text-orange-800 dark:text-orange-300 mb-1">Chrome en iOS tiene limitaciones</div>
-                <div className="text-sm text-orange-700 dark:text-orange-400">
-                  Para usar el escaneo con cámara, te recomendamos abrir esta página en <strong>Safari</strong>.
-                  Mientras tanto, puedes usar el ingreso manual o el botón Demo.
+                <div className="font-bold text-blue-800 dark:text-blue-300 mb-1">Modo iOS Optimizado</div>
+                <div className="text-sm text-blue-700 dark:text-blue-400">
+                  Usaremos la cámara nativa de tu iPhone/iPad. Presiona <strong>"📷 Tomar Foto"</strong> y enfoca el código de barras del producto.
                 </div>
               </div>
             </div>
@@ -208,12 +235,27 @@ export default function BarcodeScanner({
             >
               ✓ Demo
             </button>
-            <button
-              onClick={startRealScanning}
-              className="py-3 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-semibold text-sm sm:text-base"
-            >
-              📱 Escaneo Real
-            </button>
+
+            {/* Botón nativo para iOS */}
+            {isIOS ? (
+              <label className="py-3 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-semibold text-sm sm:text-base cursor-pointer flex items-center justify-center">
+                📷 Tomar Foto
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="hidden"
+                  onChange={handleNativeCapture}
+                />
+              </label>
+            ) : (
+              <button
+                onClick={startRealScanning}
+                className="py-3 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-semibold text-sm sm:text-base"
+              >
+                📱 Escaneo Real
+              </button>
+            )}
           </div>
         )}
 
