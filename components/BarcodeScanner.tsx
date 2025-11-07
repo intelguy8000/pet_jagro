@@ -55,8 +55,7 @@ export default function BarcodeScanner({
       setError('');
 
       // Usar html5-qrcode para decodificar la imagen
-      const { default: Html5QrcodeScanner } = await import('html5-qrcode');
-      const html5QrCode = new Html5QrcodeScanner(scannerIdRef.current, { fps: 10, qrbox: 250 }, false);
+      const html5QrCode = new Html5Qrcode(scannerIdRef.current);
 
       html5QrCode.scanFile(file, true)
         .then((decodedText) => {
