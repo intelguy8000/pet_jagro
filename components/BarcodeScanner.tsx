@@ -52,18 +52,44 @@ export default function BarcodeScanner({
     if (!file) return;
 
     try {
-      setError('');
+      setError('Procesando imagen...');
 
-      // Usar html5-qrcode para decodificar la imagen
-      const html5QrCode = new Html5Qrcode(scannerIdRef.current);
+      // Crear un elemento de imagen para cargar el archivo
+      const imageUrl = URL.createObjectURL(file);
+      const img = new Image();
 
-      html5QrCode.scanFile(file, true)
-        .then((decodedText) => {
-          onScanSuccess(decodedText);
-        })
-        .catch(() => {
-          setError('No se pudo leer el código de barras. Intenta con mejor iluminación o enfoque.');
-        });
+      img.onload = async () => {
+        try {
+          // Usar ZXing para decodificar la imagen
+          const { BrowserMultiFormatReader } = await import('@zxing/library');
+          const codeReader = new BrowserMultiFormatReader();
+
+          const result = await codeReader.decodeFromImageElement(img);
+          URL.revokeObjectURL(imageUrl);
+
+          if (result) {
+            onScanSuccess(result.getText());
+          } else {
+            setError('No se detectó ningún código de barras. Intenta de nuevo con mejor iluminación.');
+          }
+        } catch (err: any) {
+          console.error('Error al decodificar:', err);
+          URL.revokeObjectURL(imageUrl);
+
+          if (err.message?.includes('No MultiFormat Readers')) {
+            setError('No se detectó ningún código de barras en la imagen. Asegúrate de enfocar bien el código.');
+          } else {
+            setError('No se pudo leer el código de barras. Intenta con mejor iluminación o enfoque más cercano.');
+          }
+        }
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(imageUrl);
+        setError('Error al cargar la imagen. Intenta de nuevo.');
+      };
+
+      img.src = imageUrl;
     } catch (err) {
       console.error('Error al procesar imagen:', err);
       setError('Error al procesar la imagen. Intenta de nuevo.');
