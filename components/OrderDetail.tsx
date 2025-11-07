@@ -91,19 +91,19 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
                     order.items.reduce((sum, item) => sum + item.quantity, 0)) * 100;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header con botón volver */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <button
           onClick={onBack}
-          className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold"
+          className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold text-base sm:text-lg"
         >
-          <span>←</span>
+          <span className="text-xl">←</span>
           <span>Volver a Pedidos</span>
         </button>
 
         {order.status === 'completed' && (
-          <div className="flex items-center space-x-2 bg-green-100 dark:bg-green-900 dark:bg-opacity-30 text-green-800 dark:text-green-300 px-4 py-2 rounded-lg font-semibold">
+          <div className="flex items-center space-x-2 bg-green-100 dark:bg-green-900 dark:bg-opacity-30 text-green-800 dark:text-green-300 px-3 sm:px-4 py-2 rounded-lg font-semibold text-sm sm:text-base">
             <span>✅</span>
             <span>Pedido Completado</span>
           </div>
@@ -111,33 +111,33 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
       </div>
 
       {/* Información del pedido */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        <div className="flex items-start justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">{order.orderNumber}</h1>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">{order.customer.name}</h2>
-            <div className="space-y-1 text-gray-600 dark:text-gray-300">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4 sm:mb-6">
+          <div className="flex-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">{order.orderNumber}</h1>
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">{order.customer.name}</h2>
+            <div className="space-y-1 text-sm sm:text-base text-gray-600 dark:text-gray-300">
               <div>📞 {order.customer.phone}</div>
-              <div>📍 {order.customer.address}</div>
+              <div className="break-words">📍 {order.customer.address}</div>
             </div>
           </div>
 
-          <div className="text-right">
-            <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Total</div>
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400">{formatPrice(order.totalValue)}</div>
+          <div className="text-left sm:text-right">
+            <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-1">Total</div>
+            <div className="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">{formatPrice(order.totalValue)}</div>
           </div>
         </div>
 
         {/* Barra de progreso */}
         {order.status !== 'pending' && (
-          <div className="mb-6">
-            <div className="flex items-center justify-between text-sm mb-2">
+          <div className="mb-4 sm:mb-6">
+            <div className="flex items-center justify-between text-xs sm:text-sm mb-2">
               <span className="font-semibold dark:text-gray-200">Progreso del Picking</span>
-              <span className="text-blue-600 dark:text-blue-400 font-bold">{Math.round(progress)}%</span>
+              <span className="text-blue-600 dark:text-blue-400 font-bold text-sm sm:text-base">{Math.round(progress)}%</span>
             </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4">
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 sm:h-4">
               <div
-                className="bg-blue-600 dark:bg-blue-500 h-4 rounded-full transition-all duration-500"
+                className="bg-blue-600 dark:bg-blue-500 h-3 sm:h-4 rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -148,7 +148,7 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
         {order.status === 'pending' && (
           <button
             onClick={handleAcceptOrder}
-            className="w-full py-4 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors font-bold text-lg"
+            className="w-full py-3 sm:py-4 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors font-bold text-base sm:text-lg"
           >
             ✓ Aceptar Pedido y Comenzar Picking
           </button>
@@ -158,7 +158,7 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
         {order.status === 'completed' && (
           <button
             onClick={handleSendToBilling}
-            className="w-full py-4 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-bold text-lg"
+            className="w-full py-3 sm:py-4 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-bold text-base sm:text-lg"
           >
             💰 Pasar a Facturación
           </button>
@@ -166,14 +166,14 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
       </div>
 
       {/* Lista de items */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        <h3 className="text-2xl font-bold mb-4 dark:text-gray-100">Items del Pedido</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 sm:p-6">
+        <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 dark:text-gray-100">Items del Pedido</h3>
 
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {order.items.map((item) => (
             <div
               key={item.id}
-              className={`border-2 rounded-lg p-4 transition-all ${
+              className={`border-2 rounded-lg p-3 sm:p-4 transition-all ${
                 item.scanned
                   ? 'border-green-400 dark:border-green-500 bg-green-50 dark:bg-green-900 dark:bg-opacity-20'
                   : order.status === 'in_progress'
@@ -181,53 +181,53 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
                   : 'border-gray-200 dark:border-gray-600 dark:bg-gray-700'
               }`}
             >
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
                 {/* Imagen del producto */}
                 {item.product.imageUrl && (
-                  <div className="flex-shrink-0">
-                    <div className="relative w-24 h-24 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
+                  <div className="flex-shrink-0 mx-auto sm:mx-0">
+                    <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
                       <Image
                         src={item.product.imageUrl}
                         alt={item.product.name}
                         fill
                         className="object-cover"
-                        sizes="96px"
+                        sizes="(max-width: 640px) 80px, 96px"
                       />
                     </div>
                   </div>
                 )}
 
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-3">
-                    {item.scanned && <span className="text-2xl">✅</span>}
-                    <h4 className="text-xl font-bold text-gray-900 dark:text-gray-100">{item.product.name}</h4>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center space-x-2 mb-2 sm:mb-3">
+                    {item.scanned && <span className="text-xl sm:text-2xl">✅</span>}
+                    <h4 className="text-base sm:text-xl font-bold text-gray-900 dark:text-gray-100 break-words">{item.product.name}</h4>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 text-sm mb-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-xs sm:text-sm mb-2 sm:mb-3">
                     <div>
                       <span className="text-gray-600 dark:text-gray-300">Categoría: </span>
                       <span className="font-medium dark:text-gray-200">{categoryNames[item.product.category]}</span>
                     </div>
-                    <div>
+                    <div className="break-all">
                       <span className="text-gray-600 dark:text-gray-300">Código: </span>
-                      <span className="font-mono font-medium dark:text-gray-200">{item.product.barcode}</span>
+                      <span className="font-mono font-medium dark:text-gray-200 text-xs">{item.product.barcode}</span>
                     </div>
                     <div>
                       <span className="text-gray-600 dark:text-gray-300">Cantidad: </span>
-                      <span className="font-bold text-blue-600 dark:text-blue-400">
+                      <span className="font-bold text-blue-600 dark:text-blue-400 text-sm sm:text-base">
                         {item.scannedQuantity} / {item.quantity}
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-600 dark:text-gray-300">Stock disponible: </span>
+                      <span className="text-gray-600 dark:text-gray-300">Stock: </span>
                       <span className={`font-bold ${item.product.stock > item.quantity ? 'text-green-600 dark:text-green-400' : 'text-orange-600 dark:text-orange-400'}`}>
-                        {item.product.stock} unidades
+                        {item.product.stock} unid.
                       </span>
                     </div>
                   </div>
 
                   {item.product.stock < item.quantity && (
-                    <div className="bg-orange-100 dark:bg-orange-900 dark:bg-opacity-30 border border-orange-300 dark:border-orange-600 text-orange-800 dark:text-orange-300 px-3 py-2 rounded text-sm mb-2">
+                    <div className="bg-orange-100 dark:bg-orange-900 dark:bg-opacity-30 border border-orange-300 dark:border-orange-600 text-orange-800 dark:text-orange-300 px-2 sm:px-3 py-2 rounded text-xs sm:text-sm mb-2">
                       ⚠️ Stock insuficiente. Disponible: {item.product.stock}
                     </div>
                   )}
@@ -236,7 +236,7 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
                 {order.status === 'in_progress' && !item.scanned && (
                   <button
                     onClick={() => handleStartScanning(item)}
-                    className="ml-4 px-6 py-3 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-semibold"
+                    className="w-full sm:w-auto sm:ml-4 px-4 sm:px-6 py-3 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-semibold text-sm sm:text-base"
                   >
                     📷 Escanear
                   </button>

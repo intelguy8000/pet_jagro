@@ -26,26 +26,26 @@ export default function Home() {
     <main className="flex min-h-screen flex-col bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800">
       {/* Header con logo J Agro */}
       <header className="bg-white dark:bg-gray-800 shadow-md border-b-4" style={{ borderColor: '#106BA4' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <Image
                 src="/jotagro-logo.png"
                 alt="J Agro"
-                width={120}
-                height={80}
-                className="object-contain"
+                width={80}
+                height={53}
+                className="object-contain sm:w-[120px] sm:h-[80px]"
               />
               <div>
-                <h1 className="text-2xl font-bold" style={{ color: '#106BA4' }}>
+                <h1 className="text-lg sm:text-2xl font-bold" style={{ color: '#106BA4' }}>
                   Sistema de Picking
                 </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 hidden sm:block">
                   Gestión de Pedidos y Trazabilidad
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               {/* Botón de tema */}
               <button
                 onClick={toggleTheme}
@@ -53,12 +53,12 @@ export default function Home() {
                 title={theme === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
               >
                 {theme === 'light' ? (
-                  <span className="text-2xl">🌙</span>
+                  <span className="text-xl sm:text-2xl">🌙</span>
                 ) : (
-                  <span className="text-2xl">☀️</span>
+                  <span className="text-xl sm:text-2xl">☀️</span>
                 )}
               </button>
-              <div className="flex items-center space-x-2">
+              <div className="hidden sm:flex items-center space-x-2">
                 <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                 <span className="text-sm text-gray-600 dark:text-gray-300">Conectado</span>
               </div>
@@ -68,12 +68,12 @@ export default function Home() {
       </header>
 
       {/* Tabs de navegación */}
-      <div className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-1">
+      <div className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-sm overflow-x-auto">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+          <div className="flex space-x-1 min-w-max sm:min-w-0">
             <button
               onClick={() => setActiveTab('picking')}
-              className={`px-6 py-3 font-semibold transition-all border-b-4 ${
+              className={`px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base ${
                 activeTab === 'picking'
                   ? 'border-blue-600 text-blue-600 bg-blue-50 dark:bg-blue-900 dark:text-blue-300'
                   : 'border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -83,7 +83,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => setActiveTab('billing')}
-              className={`px-6 py-3 font-semibold transition-all border-b-4 ${
+              className={`px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base ${
                 activeTab === 'billing'
                   ? 'border-blue-600 text-blue-600 bg-blue-50 dark:bg-blue-900 dark:text-blue-300'
                   : 'border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -93,7 +93,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => setActiveTab('tracking')}
-              className={`px-6 py-3 font-semibold transition-all border-b-4 ${
+              className={`px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base ${
                 activeTab === 'tracking'
                   ? 'border-blue-600 text-blue-600 bg-blue-50 dark:bg-blue-900 dark:text-blue-300'
                   : 'border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -103,7 +103,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => setActiveTab('integrations')}
-              className={`px-6 py-3 font-semibold transition-all border-b-4 ${
+              className={`px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base ${
                 activeTab === 'integrations'
                   ? 'border-blue-600 text-blue-600 bg-blue-50 dark:bg-blue-900 dark:text-blue-300'
                   : 'border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -113,7 +113,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => setActiveTab('design')}
-              className={`px-6 py-3 font-semibold transition-all border-b-4 ${
+              className={`px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base ${
                 activeTab === 'design'
                   ? 'border-blue-600 text-blue-600 bg-blue-50 dark:bg-blue-900 dark:text-blue-300'
                   : 'border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -126,7 +126,7 @@ export default function Home() {
       </div>
 
       {/* Contenido según tab activo */}
-      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="flex-1 max-w-7xl w-full mx-auto px-2 sm:px-4 lg:px-8 py-3 sm:py-6">
         {activeTab === 'picking' && <PickingView orders={orders} onUpdateOrder={handleUpdateOrder} />}
         {activeTab === 'billing' && <FacturacionView orders={orders} onUpdateOrder={handleUpdateOrder} />}
         {activeTab === 'tracking' && <TrackingView orders={orders} />}
