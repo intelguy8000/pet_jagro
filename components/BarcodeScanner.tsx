@@ -1,13 +1,24 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { Html5Qrcode } from 'html5-qrcode';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import Quagga from '@ericblade/quagga2';
 
 interface BarcodeScannerProps {
   onScanSuccess: (barcode: string) => void;
   onClose: () => void;
   expectedBarcode: string;
   productName: string;
+}
+
+// Función para calcular la mediana de los errores
+function getMedian(arr: number[]): number {
+  const newArr = [...arr];
+  newArr.sort((a, b) => a - b);
+  const half = Math.floor(newArr.length / 2);
+  if (newArr.length % 2 === 1) {
+    return newArr[half];
+  }
+  return (newArr[half - 1] + newArr[half]) / 2;
 }
 
 export default function BarcodeScanner({
@@ -18,18 +29,8 @@ export default function BarcodeScanner({
 }: BarcodeScannerProps) {
   const [manualCode, setManualCode] = useState('');
   const [error, setError] = useState('');
-  const [isRealScanning, setIsRealScanning] = useState(false);
-  const [scannerReady, setScannerReady] = useState(false);
-  const scannerRef = useRef<Html5Qrcode | null>(null);
-  const scannerIdRef = useRef('barcode-scanner-' + Date.now());
-
-  // Detectar Chrome en iOS
-  const isIOSChrome = typeof window !== 'undefined' &&
-    /iPhone|iPad|iPod/.test(navigator.userAgent) &&
-    /CriOS/.test(navigator.userAgent);
-
-  // Detectar cualquier iOS
-  const isIOS = typeof window !== 'undefined' && /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const [isScanning, setIsScanning] = useState(false);
+  const scannerRef = useRef<HTMLDivElement | null>(null);
 
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,144 +47,114 @@ export default function BarcodeScanner({
     onScanSuccess(expectedBarcode);
   };
 
-  // Manejo de escaneo nativo para iOS usando input file
-  const handleNativeCapture = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  // Callback para cuando se detecta un código con Quagga2
+  const onDetected = useCallback((result: any) => {
+    // Calcular mediana de errores para validar la calidad del escaneo
+    const errors = result.codeResult.decodedCodes.flatMap((x: any) => x.error || []);
+    const medianError = getMedian(errors);
 
-    try {
-      setError('Procesando imagen...');
+    // Solo aceptar si el escaneo tiene al menos 75% de certeza (error < 0.25)
+    if (medianError < 0.25) {
+      const code = result.codeResult.code;
+      console.log('Código detectado:', code);
 
-      // Crear un elemento de imagen para cargar el archivo
-      const imageUrl = URL.createObjectURL(file);
-      const img = new Image();
+      // Detener escaneo
+      stopScanning();
 
-      img.onload = async () => {
-        try {
-          // Usar ZXing para decodificar la imagen
-          const { BrowserMultiFormatReader } = await import('@zxing/library');
-          const codeReader = new BrowserMultiFormatReader();
-
-          const result = await codeReader.decodeFromImageElement(img);
-          URL.revokeObjectURL(imageUrl);
-
-          if (result) {
-            onScanSuccess(result.getText());
-          } else {
-            setError('No se detectó ningún código de barras. Intenta de nuevo con mejor iluminación.');
-          }
-        } catch (err: any) {
-          console.error('Error al decodificar:', err);
-          URL.revokeObjectURL(imageUrl);
-
-          if (err.message?.includes('No MultiFormat Readers')) {
-            setError('No se detectó ningún código de barras en la imagen. Asegúrate de enfocar bien el código.');
-          } else {
-            setError('No se pudo leer el código de barras. Intenta con mejor iluminación o enfoque más cercano.');
-          }
-        }
-      };
-
-      img.onerror = () => {
-        URL.revokeObjectURL(imageUrl);
-        setError('Error al cargar la imagen. Intenta de nuevo.');
-      };
-
-      img.src = imageUrl;
-    } catch (err) {
-      console.error('Error al procesar imagen:', err);
-      setError('Error al procesar la imagen. Intenta de nuevo.');
+      // Verificar si es el código correcto
+      if (code === expectedBarcode) {
+        onScanSuccess(code);
+      } else {
+        setError(`❌ Código incorrecto. Esperado: ${expectedBarcode}, Detectado: ${code}`);
+        setTimeout(() => setError(''), 3000);
+      }
     }
-  };
+  }, [expectedBarcode, onScanSuccess]);
 
-  // Iniciar escaneo real con cámara
-  const startRealScanning = async () => {
+  // Iniciar escaneo con Quagga2
+  const startScanning = async () => {
+    if (!scannerRef.current) return;
+
+    setIsScanning(true);
+    setError('');
+
     try {
-      setIsRealScanning(true);
-      setError('');
-
-      // Detectar si es iOS Chrome
-      const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-      const isChrome = /CriOS/.test(navigator.userAgent);
-
-      if (isIOS && isChrome) {
-        setError('⚠️ Chrome en iOS tiene limitaciones con la cámara. Recomendamos usar Safari para mejor experiencia.');
-        // Continuar de todas formas, por si acaso funciona
-      }
-
-      // Crear instancia del scanner si no existe
-      if (!scannerRef.current) {
-        scannerRef.current = new Html5Qrcode(scannerIdRef.current);
-      }
-
-      const config = {
-        fps: 10,
-        qrbox: { width: 250, height: 150 },
-        aspectRatio: 1.777778,
-      };
-
-      await scannerRef.current.start(
-        { facingMode: 'environment' },
-        config,
-        (decodedText) => {
-          // Escaneo exitoso
-          stopRealScanning();
-          onScanSuccess(decodedText);
+      await Quagga.init({
+        inputStream: {
+          type: 'LiveStream',
+          constraints: {
+            width: 640,
+            height: 480,
+            facingMode: 'environment', // Cámara trasera
+          },
+          target: scannerRef.current,
         },
-        (errorMessage) => {
-          // Errores de escaneo (normal, ocurre continuamente mientras escanea)
+        decoder: {
+          readers: [
+            'ean_reader',      // EAN-13, EAN-8
+            'ean_8_reader',
+            'code_128_reader', // Code 128
+            'code_39_reader',  // Code 39
+            'upc_reader',      // UPC-A, UPC-E
+            'upc_e_reader',
+          ],
+        },
+        locate: true,
+        locator: {
+          patchSize: 'medium',
+          halfSample: true,
+        },
+      }, (err) => {
+        if (err) {
+          console.error('Error al iniciar Quagga:', err);
+
+          let errorMsg = '❌ No se pudo acceder a la cámara.';
+          if (err.name === 'NotAllowedError') {
+            errorMsg = '❌ Permiso de cámara denegado. Por favor permite el acceso.';
+          } else if (err.name === 'NotFoundError') {
+            errorMsg = '❌ No se encontró cámara en tu dispositivo.';
+          }
+
+          setError(errorMsg);
+          setIsScanning(false);
+          return;
         }
-      );
 
-      setScannerReady(true);
-      setError(''); // Limpiar el warning si funcionó
-    } catch (err: any) {
-      console.error('Error al iniciar escáner:', err);
+        // Iniciar escaneo
+        Quagga.start();
+        console.log('Quagga iniciado correctamente');
+      });
 
-      // Mensajes de error más específicos
-      let errorMsg = 'No se pudo acceder a la cámara.';
+      // Escuchar detecciones
+      Quagga.onDetected(onDetected);
 
-      if (err.name === 'NotAllowedError' || err.message?.includes('Permission')) {
-        errorMsg = '❌ Permiso de cámara denegado. Por favor permite el acceso a la cámara en la configuración de tu navegador.';
-      } else if (err.name === 'NotFoundError') {
-        errorMsg = '❌ No se encontró ninguna cámara en tu dispositivo.';
-      } else if (err.name === 'NotReadableError') {
-        errorMsg = '❌ La cámara está en uso por otra aplicación. Cierra otras apps que usen la cámara.';
-      } else if (err.name === 'OverconstrainedError') {
-        errorMsg = '❌ No se pudo acceder a la cámara trasera. Intenta usar Safari.';
-      } else if (/CriOS/.test(navigator.userAgent)) {
-        errorMsg = '❌ Chrome en iOS no soporta el escaneo. Por favor usa Safari para escanear con cámara.';
-      }
-
-      setError(errorMsg);
-      setIsRealScanning(false);
+    } catch (err) {
+      console.error('Error en startScanning:', err);
+      setError('❌ Error al inicializar el escáner.');
+      setIsScanning(false);
     }
   };
 
-  // Detener escaneo real
-  const stopRealScanning = async () => {
-    try {
-      if (scannerRef.current && scannerRef.current.isScanning) {
-        await scannerRef.current.stop();
-      }
-      setIsRealScanning(false);
-      setScannerReady(false);
-    } catch (err) {
-      console.error('Error al detener escáner:', err);
-    }
+  // Detener escaneo
+  const stopScanning = () => {
+    Quagga.stop();
+    Quagga.offDetected(onDetected);
+    setIsScanning(false);
   };
 
   // Limpiar al desmontar
   useEffect(() => {
     return () => {
-      if (scannerRef.current) {
-        stopRealScanning();
+      if (isScanning) {
+        stopScanning();
       }
     };
-  }, []);
+  }, [isScanning]);
 
   const handleClose = () => {
-    stopRealScanning();
+    if (isScanning) {
+      stopScanning();
+    }
     onClose();
   };
 
@@ -200,21 +171,6 @@ export default function BarcodeScanner({
           </button>
         </div>
 
-        {/* Información para iOS */}
-        {isIOS && (
-          <div className="mb-4 bg-blue-100 dark:bg-blue-900 dark:bg-opacity-30 border-2 border-blue-400 dark:border-blue-600 rounded-lg p-3 sm:p-4">
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">ℹ️</span>
-              <div className="flex-1">
-                <div className="font-bold text-blue-800 dark:text-blue-300 mb-1">Modo iOS Optimizado</div>
-                <div className="text-sm text-blue-700 dark:text-blue-400">
-                  Usaremos la cámara nativa de tu iPhone/iPad. Presiona <strong>"📷 Tomar Foto"</strong> y enfoca el código de barras del producto.
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
         <div className="mb-4 sm:mb-6 bg-blue-50 dark:bg-blue-900 dark:bg-opacity-30 border-2 border-blue-200 dark:border-blue-600 rounded-lg p-3 sm:p-4">
           <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-1">Producto</div>
           <div className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 break-words">{productName}</div>
@@ -224,19 +180,23 @@ export default function BarcodeScanner({
 
         {/* Área de escaneo */}
         <div className="mb-4 sm:mb-6">
-          {isRealScanning ? (
-            // Escáner real activo
+          {isScanning ? (
+            // Escáner Quagga2 activo
             <div>
-              <div id={scannerIdRef.current} className="rounded-lg overflow-hidden"></div>
+              <div
+                ref={scannerRef}
+                className="rounded-lg overflow-hidden bg-black"
+                style={{ position: 'relative', minHeight: '300px' }}
+              />
               <button
-                onClick={stopRealScanning}
+                onClick={stopScanning}
                 className="w-full mt-3 sm:mt-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold text-sm sm:text-base"
               >
-                ⏹ Detener Escaneo Real
+                ⏹ Detener Escaneo
               </button>
             </div>
           ) : (
-            // Vista simulada
+            // Vista inicial
             <div className="bg-gray-900 rounded-lg p-6 sm:p-8 text-center">
               <div className="text-white mb-3 sm:mb-4">
                 <div className="text-4xl sm:text-6xl mb-2">📷</div>
@@ -252,7 +212,7 @@ export default function BarcodeScanner({
         </div>
 
         {/* Botones de escaneo */}
-        {!isRealScanning && (
+        {!isScanning && (
           <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4">
             <button
               onClick={handleQuickScan}
@@ -261,31 +221,17 @@ export default function BarcodeScanner({
               ✓ Demo
             </button>
 
-            {/* Botón nativo para iOS */}
-            {isIOS ? (
-              <label className="py-3 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-semibold text-sm sm:text-base cursor-pointer flex items-center justify-center">
-                📷 Tomar Foto
-                <input
-                  type="file"
-                  accept="image/*"
-                  capture="environment"
-                  className="hidden"
-                  onChange={handleNativeCapture}
-                />
-              </label>
-            ) : (
-              <button
-                onClick={startRealScanning}
-                className="py-3 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-semibold text-sm sm:text-base"
-              >
-                📱 Escaneo Real
-              </button>
-            )}
+            <button
+              onClick={startScanning}
+              className="py-3 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-semibold text-sm sm:text-base"
+            >
+              📱 Escanear con Cámara
+            </button>
           </div>
         )}
 
         {/* Ingreso manual */}
-        {!isRealScanning && (
+        {!isScanning && (
           <div className="border-t dark:border-gray-600 pt-3 sm:pt-4">
             <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-2 sm:mb-3">¿No funciona la cámara? Ingresa el código manualmente:</p>
 
