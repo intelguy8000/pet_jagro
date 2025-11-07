@@ -114,8 +114,12 @@ export default function PickingView({ orders, onUpdateOrder }: PickingViewProps)
 
                     <div className="flex flex-col sm:flex-row sm:flex-wrap gap-1 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-3">
                       <span>📞 {order.customer.phone}</span>
-                      <span className="hidden sm:inline">📍 {order.customer.address}</span>
-                      <span className="sm:hidden">📍 {order.customer.address.substring(0, 30)}...</span>
+                      {order.customer.address && (
+                        <>
+                          <span className="hidden sm:inline">📍 {order.customer.address}</span>
+                          <span className="sm:hidden">📍 {order.customer.address.substring(0, 30)}...</span>
+                        </>
+                      )}
                       <span>🕒 {format(order.createdAt, "d MMM, HH:mm", { locale: es })}</span>
                     </div>
 
