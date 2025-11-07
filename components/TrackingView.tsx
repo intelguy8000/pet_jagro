@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { mockProducts, mockPurchaseSuggestions } from '@/lib/mockData';
 import { Product, PurchaseSuggestion, categoryNames, Order } from '@/types';
 import { format } from 'date-fns';
@@ -217,6 +218,7 @@ export default function TrackingView({ orders }: TrackingViewProps) {
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-gray-700 border-b-2 border-gray-200 dark:border-gray-600">
               <tr>
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Imagen</th>
                 <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Producto</th>
                 <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200">Categoría</th>
                 <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-200">Stock</th>
@@ -228,6 +230,23 @@ export default function TrackingView({ orders }: TrackingViewProps) {
             <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
               {filteredProducts.map((product) => (
                 <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <td className="px-4 py-3">
+                    {product.imageUrl ? (
+                      <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
+                        <Image
+                          src={product.imageUrl}
+                          alt={product.name}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-16 h-16 rounded-lg bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-400 dark:text-gray-500">
+                        <span className="text-2xl">📦</span>
+                      </div>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <div className="font-medium text-gray-900 dark:text-gray-100">{product.name}</div>
                     <div className="text-xs text-gray-500 dark:text-gray-400 font-mono">{product.barcode}</div>

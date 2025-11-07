@@ -17,6 +17,7 @@ export interface Product {
   price: number;
   supplier?: string;
   barcode: string; // Código de barras para escaneo
+  imageUrl?: string; // URL de la imagen del producto
   lastUpdated: Date;
 }
 

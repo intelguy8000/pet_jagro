@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Order, OrderItem, categoryNames } from '@/types';
 import BarcodeScanner from './BarcodeScanner';
 
@@ -180,7 +181,22 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
                   : 'border-gray-200 dark:border-gray-600 dark:bg-gray-700'
               }`}
             >
-              <div className="flex items-start justify-between">
+              <div className="flex items-start justify-between gap-4">
+                {/* Imagen del producto */}
+                {item.product.imageUrl && (
+                  <div className="flex-shrink-0">
+                    <div className="relative w-24 h-24 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
+                      <Image
+                        src={item.product.imageUrl}
+                        alt={item.product.name}
+                        fill
+                        className="object-cover"
+                        sizes="96px"
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-3">
                     {item.scanned && <span className="text-2xl">✅</span>}
