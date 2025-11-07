@@ -23,6 +23,11 @@ export default function BarcodeScanner({
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const scannerIdRef = useRef('barcode-scanner-' + Date.now());
 
+  // Detectar Chrome en iOS
+  const isIOSChrome = typeof window !== 'undefined' &&
+    /iPhone|iPad|iPod/.test(navigator.userAgent) &&
+    /CriOS/.test(navigator.userAgent);
+
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (manualCode === expectedBarcode) {
@@ -43,6 +48,15 @@ export default function BarcodeScanner({
     try {
       setIsRealScanning(true);
       setError('');
+
+      // Detectar si es iOS Chrome
+      const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+      const isChrome = /CriOS/.test(navigator.userAgent);
+
+      if (isIOS && isChrome) {
+        setError('⚠️ Chrome en iOS tiene limitaciones con la cámara. Recomendamos usar Safari para mejor experiencia.');
+        // Continuar de todas formas, por si acaso funciona
+      }
 
       // Crear instancia del scanner si no existe
       if (!scannerRef.current) {
@@ -69,9 +83,26 @@ export default function BarcodeScanner({
       );
 
       setScannerReady(true);
-    } catch (err) {
+      setError(''); // Limpiar el warning si funcionó
+    } catch (err: any) {
       console.error('Error al iniciar escáner:', err);
-      setError('No se pudo acceder a la cámara. Verifica los permisos.');
+
+      // Mensajes de error más específicos
+      let errorMsg = 'No se pudo acceder a la cámara.';
+
+      if (err.name === 'NotAllowedError' || err.message?.includes('Permission')) {
+        errorMsg = '❌ Permiso de cámara denegado. Por favor permite el acceso a la cámara en la configuración de tu navegador.';
+      } else if (err.name === 'NotFoundError') {
+        errorMsg = '❌ No se encontró ninguna cámara en tu dispositivo.';
+      } else if (err.name === 'NotReadableError') {
+        errorMsg = '❌ La cámara está en uso por otra aplicación. Cierra otras apps que usen la cámara.';
+      } else if (err.name === 'OverconstrainedError') {
+        errorMsg = '❌ No se pudo acceder a la cámara trasera. Intenta usar Safari.';
+      } else if (/CriOS/.test(navigator.userAgent)) {
+        errorMsg = '❌ Chrome en iOS no soporta el escaneo. Por favor usa Safari para escanear con cámara.';
+      }
+
+      setError(errorMsg);
       setIsRealScanning(false);
     }
   };
@@ -115,6 +146,22 @@ export default function BarcodeScanner({
             ×
           </button>
         </div>
+
+        {/* Advertencia para Chrome iOS */}
+        {isIOSChrome && (
+          <div className="mb-4 bg-orange-100 dark:bg-orange-900 dark:bg-opacity-30 border-2 border-orange-400 dark:border-orange-600 rounded-lg p-3 sm:p-4">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">⚠️</span>
+              <div className="flex-1">
+                <div className="font-bold text-orange-800 dark:text-orange-300 mb-1">Chrome en iOS tiene limitaciones</div>
+                <div className="text-sm text-orange-700 dark:text-orange-400">
+                  Para usar el escaneo con cámara, te recomendamos abrir esta página en <strong>Safari</strong>.
+                  Mientras tanto, puedes usar el ingreso manual o el botón Demo.
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="mb-4 sm:mb-6 bg-blue-50 dark:bg-blue-900 dark:bg-opacity-30 border-2 border-blue-200 dark:border-blue-600 rounded-lg p-3 sm:p-4">
           <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-1">Producto</div>
