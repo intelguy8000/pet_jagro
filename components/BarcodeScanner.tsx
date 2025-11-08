@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import Quagga from '@ericblade/quagga2';
 
 interface BarcodeScannerProps {
   onScanSuccess: (barcode: string) => void;
@@ -47,38 +46,49 @@ export default function BarcodeScanner({
     onScanSuccess(expectedBarcode);
   };
 
-  // Callback para cuando se detecta un código con Quagga2
-  const onDetected = useCallback((result: any) => {
-    // Calcular mediana de errores para validar la calidad del escaneo
-    const errors = result.codeResult.decodedCodes.flatMap((x: any) => x.error || []);
-    const medianError = getMedian(errors);
-
-    // Solo aceptar si el escaneo tiene al menos 75% de certeza (error < 0.25)
-    if (medianError < 0.25) {
-      const code = result.codeResult.code;
-      console.log('Código detectado:', code);
-
-      // Detener escaneo
-      stopScanning();
-
-      // Verificar si es el código correcto
-      if (code === expectedBarcode) {
-        onScanSuccess(code);
-      } else {
-        setError(`❌ Código incorrecto. Esperado: ${expectedBarcode}, Detectado: ${code}`);
-        setTimeout(() => setError(''), 3000);
-      }
-    }
-  }, [expectedBarcode, onScanSuccess]);
-
   // Iniciar escaneo con Quagga2
   const startScanning = async () => {
-    if (!scannerRef.current) return;
+    if (!scannerRef.current) {
+      console.log('scannerRef no está disponible');
+      return;
+    }
 
+    console.log('Iniciando escaneo...');
     setIsScanning(true);
     setError('');
 
     try {
+      // Importar Quagga2 dinámicamente
+      const Quagga = (await import('@ericblade/quagga2')).default;
+
+      // Callback para detección
+      const handleDetected = (result: any) => {
+        console.log('Detección recibida:', result);
+
+        // Calcular mediana de errores para validar la calidad del escaneo
+        const errors = result.codeResult.decodedCodes.flatMap((x: any) => x.error || []);
+        const medianError = getMedian(errors);
+
+        // Solo aceptar si el escaneo tiene al menos 75% de certeza (error < 0.25)
+        if (medianError < 0.25) {
+          const code = result.codeResult.code;
+          console.log('Código detectado con buena calidad:', code);
+
+          // Detener escaneo
+          Quagga.stop();
+          Quagga.offDetected(handleDetected);
+          setIsScanning(false);
+
+          // Verificar si es el código correcto
+          if (code === expectedBarcode) {
+            onScanSuccess(code);
+          } else {
+            setError(`❌ Código incorrecto. Esperado: ${expectedBarcode}, Detectado: ${code}`);
+            setTimeout(() => setError(''), 3000);
+          }
+        }
+      };
+
       await Quagga.init({
         inputStream: {
           type: 'LiveStream',
@@ -121,12 +131,13 @@ export default function BarcodeScanner({
         }
 
         // Iniciar escaneo
+        console.log('Quagga init exitoso, iniciando...');
         Quagga.start();
         console.log('Quagga iniciado correctamente');
       });
 
       // Escuchar detecciones
-      Quagga.onDetected(onDetected);
+      Quagga.onDetected(handleDetected);
 
     } catch (err) {
       console.error('Error en startScanning:', err);
@@ -136,10 +147,15 @@ export default function BarcodeScanner({
   };
 
   // Detener escaneo
-  const stopScanning = () => {
-    Quagga.stop();
-    Quagga.offDetected(onDetected);
-    setIsScanning(false);
+  const stopScanning = async () => {
+    try {
+      const Quagga = (await import('@ericblade/quagga2')).default;
+      Quagga.stop();
+      setIsScanning(false);
+      console.log('Quagga detenido');
+    } catch (err) {
+      console.error('Error al detener Quagga:', err);
+    }
   };
 
   // Limpiar al desmontar
