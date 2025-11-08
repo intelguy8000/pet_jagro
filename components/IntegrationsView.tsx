@@ -127,16 +127,16 @@ export default function IntegrationsView() {
   const [apiKey, setApiKey] = useState('hgi_sk_live_••••••••••••••••4a2f');
   const [showApiKey, setShowApiKey] = useState(false);
 
-  const getStatusColor = (status: IntegrationStatus) => {
+  const getStatusStyle = (status: IntegrationStatus) => {
     switch (status) {
       case 'connected':
-        return 'bg-green-100 dark:bg-green-900 dark:bg-opacity-30 text-green-800 dark:text-green-300';
+        return { backgroundColor: 'rgba(16, 185, 129, 0.2)', color: '#10b981' };
       case 'syncing':
-        return 'bg-blue-100 dark:bg-blue-900 dark:bg-opacity-30 text-blue-800 dark:text-blue-300';
+        return { backgroundColor: 'rgba(196, 104, 73, 0.2)', color: '#C46849' };
       case 'error':
-        return 'bg-red-100 dark:bg-red-900 dark:bg-opacity-30 text-red-800 dark:text-red-300';
+        return { backgroundColor: 'rgba(239, 68, 68, 0.2)', color: '#ef4444' };
       case 'disconnected':
-        return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300';
+        return { backgroundColor: '#3a3a3a', color: '#a0a0a0' };
     }
   };
 
@@ -234,29 +234,29 @@ export default function IntegrationsView() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <div className="rounded-xl p-6" style={{ backgroundColor: '#252525' }}>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-2xl font-bold dark:text-gray-100">Integraciones HGI</h2>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <h2 className="text-2xl font-bold" style={{ color: '#f5f5f5', letterSpacing: '-0.5px' }}>Integraciones HGI</h2>
+            <p className="mt-1" style={{ color: '#a0a0a0' }}>
               Conecta J Agro con el sistema HGI para sincronizar facturación, inventarios y más
             </p>
           </div>
           <div className="text-right">
-            <div className="text-sm text-gray-500 dark:text-gray-400">Estado General</div>
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+            <div className="text-sm" style={{ color: '#a0a0a0' }}>Estado General</div>
+            <div className="text-2xl font-bold" style={{ color: '#10b981' }}>
               {modules.filter(m => m.status === 'connected').length}/{modules.length}
             </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">módulos activos</div>
+            <div className="text-xs" style={{ color: '#a0a0a0' }}>módulos activos</div>
           </div>
         </div>
 
         {/* API Configuration */}
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
-          <h3 className="font-semibold mb-3 dark:text-gray-100">Configuración de API</h3>
+        <div className="pt-4 mt-4" style={{ borderTop: '1px solid #3a3a3a' }}>
+          <h3 className="font-semibold mb-3" style={{ color: '#f5f5f5' }}>Configuración de API</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: '#d0d0d0' }}>
                 API Key de HGI
               </label>
               <div className="flex items-center space-x-2">
@@ -264,25 +264,30 @@ export default function IntegrationsView() {
                   type={showApiKey ? 'text' : 'password'}
                   value={apiKey}
                   readOnly
-                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-gray-100 font-mono text-sm"
+                  className="flex-1 px-3 py-2 rounded-lg font-mono text-sm"
+                  style={{ border: '1px solid #3a3a3a', backgroundColor: '#2a2a2a', color: '#f5f5f5' }}
                 />
                 <button
                   onClick={() => setShowApiKey(!showApiKey)}
-                  className="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg text-sm font-semibold dark:text-gray-200"
+                  className="px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                  style={{ backgroundColor: '#3a3a3a', color: '#d0d0d0' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#505050'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3a3a3a'}
                 >
                   {showApiKey ? '🔒' : '👁️'}
                 </button>
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: '#d0d0d0' }}>
                 URL Base
               </label>
               <input
                 type="text"
                 value="https://api.hgi.com.co/v1"
                 readOnly
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-gray-100 text-sm"
+                className="w-full px-3 py-2 rounded-lg text-sm"
+                style={{ border: '1px solid #3a3a3a', backgroundColor: '#2a2a2a', color: '#f5f5f5' }}
               />
             </div>
           </div>
@@ -290,41 +295,42 @@ export default function IntegrationsView() {
       </div>
 
       {/* Módulos de Integración */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        <h3 className="text-xl font-bold mb-4 dark:text-gray-100">Módulos Disponibles</h3>
+      <div className="rounded-xl p-6" style={{ backgroundColor: '#252525' }}>
+        <h3 className="text-xl font-bold mb-4" style={{ color: '#f5f5f5', letterSpacing: '-0.5px' }}>Módulos Disponibles</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {modules.map((module) => (
             <div
               key={module.id}
-              className="border-2 border-gray-200 dark:border-gray-600 rounded-lg p-4 dark:bg-gray-700"
+              className="rounded-lg p-4"
+              style={{ backgroundColor: '#2a2a2a', border: '1px solid #3a3a3a' }}
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
-                  <h4 className="font-bold text-lg dark:text-gray-100">{module.name}</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{module.description}</p>
+                  <h4 className="font-bold text-lg" style={{ color: '#f5f5f5' }}>{module.name}</h4>
+                  <p className="text-sm" style={{ color: '#a0a0a0' }}>{module.description}</p>
                 </div>
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(module.status)}`}>
+                <span className="px-3 py-1 rounded-full text-xs font-semibold" style={getStatusStyle(module.status)}>
                   {getStatusIcon(module.status)} {getStatusText(module.status)}
                 </span>
               </div>
 
               {module.errorMessage && (
-                <div className="mb-3 p-2 bg-red-50 dark:bg-red-900 dark:bg-opacity-20 border border-red-200 dark:border-red-800 rounded text-sm text-red-800 dark:text-red-300">
+                <div className="mb-3 p-2 rounded text-sm" style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#ef4444' }}>
                   ⚠️ {module.errorMessage}
                 </div>
               )}
 
-              <div className="text-xs text-gray-500 dark:text-gray-400 mb-3 font-mono">
+              <div className="text-xs mb-3 font-mono" style={{ color: '#a0a0a0' }}>
                 {module.endpoint}
               </div>
 
               <div className="flex items-center justify-between text-sm mb-3">
-                <div className="dark:text-gray-300">
+                <div style={{ color: '#d0d0d0' }}>
                   <span className="font-semibold">Última sincronización:</span>{' '}
                   {module.lastSync ? formatRelativeTime(module.lastSync) : 'Nunca'}
                 </div>
                 {module.syncCount !== undefined && (
-                  <div className="text-gray-600 dark:text-gray-400">
+                  <div style={{ color: '#a0a0a0' }}>
                     {module.syncCount.toLocaleString()} registros
                   </div>
                 )}
@@ -333,22 +339,32 @@ export default function IntegrationsView() {
               <div className="flex space-x-2">
                 <button
                   onClick={() => handleToggleModule(module.id)}
-                  className={`flex-1 px-4 py-2 rounded-lg font-semibold text-sm ${
-                    module.enabled
-                      ? 'bg-red-500 hover:bg-red-600 text-white'
-                      : 'bg-green-500 hover:bg-green-600 text-white'
-                  }`}
+                  className="flex-1 px-4 py-2 rounded-lg font-semibold text-sm text-white transition-colors"
+                  style={{ backgroundColor: module.enabled ? '#ef4444' : '#10b981' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = module.enabled ? '#dc2626' : '#059669'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = module.enabled ? '#ef4444' : '#10b981'}
                 >
                   {module.enabled ? 'Desconectar' : 'Conectar'}
                 </button>
                 <button
                   onClick={() => handleSyncModule(module.id)}
                   disabled={!module.enabled || module.status === 'syncing'}
-                  className={`flex-1 px-4 py-2 rounded-lg font-semibold text-sm ${
+                  className="flex-1 px-4 py-2 rounded-lg font-semibold text-sm transition-colors"
+                  style={
                     module.enabled && module.status !== 'syncing'
-                      ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                      : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                  }`}
+                      ? { backgroundColor: '#C46849', color: '#ffffff' }
+                      : { backgroundColor: '#3a3a3a', color: '#707070', cursor: 'not-allowed' }
+                  }
+                  onMouseEnter={(e) => {
+                    if (module.enabled && module.status !== 'syncing') {
+                      e.currentTarget.style.backgroundColor = '#a54d32';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (module.enabled && module.status !== 'syncing') {
+                      e.currentTarget.style.backgroundColor = '#C46849';
+                    }
+                  }}
                 >
                   {module.status === 'syncing' ? '⟳ Sincronizando...' : '↻ Sincronizar'}
                 </button>
@@ -359,37 +375,37 @@ export default function IntegrationsView() {
       </div>
 
       {/* Registro de Actividad */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        <h3 className="text-xl font-bold mb-4 dark:text-gray-100">Registro de Actividad</h3>
+      <div className="rounded-xl p-6" style={{ backgroundColor: '#252525' }}>
+        <h3 className="text-xl font-bold mb-4" style={{ color: '#f5f5f5', letterSpacing: '-0.5px' }}>Registro de Actividad</h3>
         <div className="space-y-2">
           {logs.map((log) => (
             <div
               key={log.id}
-              className={`p-3 rounded-lg border-l-4 ${
-                log.status === 'success'
-                  ? 'border-green-500 bg-green-50 dark:bg-green-900 dark:bg-opacity-20'
-                  : 'border-red-500 bg-red-50 dark:bg-red-900 dark:bg-opacity-20'
-              }`}
+              className="p-3 rounded-lg"
+              style={{
+                borderLeft: log.status === 'success' ? '4px solid #10b981' : '4px solid #ef4444',
+                backgroundColor: log.status === 'success' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)'
+              }}
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="flex items-center space-x-2">
-                    <span className="font-semibold dark:text-gray-100">{log.module}</span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="font-semibold" style={{ color: '#f5f5f5' }}>{log.module}</span>
+                    <span className="text-xs" style={{ color: '#a0a0a0' }}>
                       {log.timestamp.toLocaleTimeString('es-CO', {
                         hour: '2-digit',
                         minute: '2-digit',
                       })}
                     </span>
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">{log.message}</div>
+                  <div className="text-sm" style={{ color: '#d0d0d0' }}>{log.message}</div>
                   {log.recordsProcessed && (
-                    <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                    <div className="text-xs mt-1" style={{ color: '#a0a0a0' }}>
                       {log.recordsProcessed} registros procesados
                     </div>
                   )}
                 </div>
-                <div className="text-2xl">
+                <div className="text-2xl" style={{ color: log.status === 'success' ? '#10b981' : '#ef4444' }}>
                   {log.status === 'success' ? '✓' : '✕'}
                 </div>
               </div>
