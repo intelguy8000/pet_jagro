@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propuesta - Sistema J Agro</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 40mm;
+            background: #1a1a1a;
+            page-break-after: always;
+        }
+
+        .hero {
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 2px solid #C46849;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: #C46849;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #f5f5f5;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #a0a0a0;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .meta {
+            display: flex;
+            gap: 40px;
+            font-size: 14px;
+            color: #707070;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: #C46849;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #f5f5f5;
+            margin: 50px 0 20px 0;
+            letter-spacing: -0.5px;
+        }
+
+        h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #f5f5f5;
+            margin: 30px 0 15px 0;
+        }
+
+        p {
+            font-size: 16px;
+            color: #d0d0d0;
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        ul {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        li {
+            font-size: 16px;
+            color: #d0d0d0;
+            margin-bottom: 12px;
+            padding-left: 30px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        li:before {
+            content: "→";
+            color: #C46849;
+            font-weight: 700;
+            position: absolute;
+            left: 0;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: #252525;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #3a3a3a;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card h4 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f5f5f5;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-icon {
+            font-size: 24px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: #b0b0b0;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #2a2a2a 0%, #353535 100%);
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 4px solid #C46849;
+            margin: 30px 0;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .tech-badge {
+            background: #2a2a2a;
+            color: #C46849;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #3a3a3a;
+        }
+
+        .timeline {
+            margin: 30px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #3a3a3a;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-phase {
+            font-size: 14px;
+            font-weight: 700;
+            color: #C46849;
+            min-width: 80px;
+        }
+
+        .timeline-content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f5f5f5;
+            margin-bottom: 8px;
+        }
+
+        .timeline-content p {
+            font-size: 14px;
+            color: #b0b0b0;
+            margin: 0;
+        }
+
+        .footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #3a3a3a;
+            text-align: center;
+            color: #707070;
+            font-size: 12px;
+        }
+
+        .price-section {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 40px 0;
+            border: 2px solid #C46849;
+        }
+
+        .price-header {
+            font-size: 14px;
+            color: #C46849;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .price-amount {
+            font-size: 56px;
+            font-weight: 700;
+            color: #f5f5f5;
+            margin-bottom: 10px;
+            letter-spacing: -2px;
+        }
+
+        .price-detail {
+            font-size: 16px;
+            color: #a0a0a0;
+            margin-bottom: 30px;
+        }
+
+        .includes-list {
+            margin-top: 30px;
+        }
+
+        .includes-list h4 {
+            font-size: 16px;
+            color: #f5f5f5;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Página 1: Portada y Resumen -->
+    <div class="page">
+        <div class="hero">
+            <div class="logo">J AGRO</div>
+            <h1>Sistema de Picking<br>y Trazabilidad</h1>
+            <p class="subtitle">Una solución moderna para optimizar la gestión de pedidos, picking y trazabilidad de productos en tiempo real</p>
+
+            <div class="meta">
+                <div class="meta-item">
+                    <span class="meta-label">Fecha</span>
+                    <span>Noviembre 2025</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Versión</span>
+                    <span>1.0</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Estado</span>
+                    <span>Propuesta</span>
+                </div>
+            </div>
+        </div>
+
+        <h2>Resumen Ejecutivo</h2>
+        <p>J Agro necesita una solución digital integral que permita gestionar eficientemente el proceso de picking, facturación y trazabilidad de productos. El sistema propuesto es una aplicación web progresiva (PWA) que funciona en cualquier dispositivo, optimizada especialmente para tablets y smartphones.</p>
+
+        <div class="highlight-box">
+            <h3>Beneficios Clave</h3>
+            <ul>
+                <li>Reducción del 40% en errores de picking mediante escaneo de códigos de barras</li>
+                <li>Ahorro de 30% en tiempo de procesamiento de pedidos</li>
+                <li>Trazabilidad completa en tiempo real de todos los productos</li>
+                <li>Integración directa con sistema de facturación HGI</li>
+                <li>Acceso desde cualquier dispositivo sin instalación</li>
+            </ul>
+        </div>
+
+        <h2>Tecnología Propuesta</h2>
+        <div class="tech-stack">
+            <span class="tech-badge">Next.js 14</span>
+            <span class="tech-badge">React 18</span>
+            <span class="tech-badge">TypeScript</span>
+            <span class="tech-badge">Tailwind CSS</span>
+            <span class="tech-badge">PWA</span>
+            <span class="tech-badge">API REST</span>
+            <span class="tech-badge">WebSocket</span>
+        </div>
+    </div>
+
+    <!-- Página 2: Características del Sistema -->
+    <div class="page">
+        <h2>Características del Sistema</h2>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4><span class="feature-icon">📦</span> Gestión de Pedidos</h4>
+                <p>Visualización en tiempo real de pedidos pendientes, en proceso y completados. Priorización automática por urgencia y valor.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><span class="feature-icon">📱</span> Escaneo de Códigos</h4>
+                <p>Lectura de códigos de barras con cámara del dispositivo. Soporta EAN, UPC, Code 128 y Code 39.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><span class="feature-icon">✅</span> Validación en Tiempo Real</h4>
+                <p>Verificación automática de productos escaneados vs. pedido. Alertas de stock insuficiente.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><span class="feature-icon">📊</span> Trazabilidad Completa</h4>
+                <p>Registro detallado de ubicaciones, movimientos y estado de todos los productos en inventario.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><span class="feature-icon">💰</span> Integración con Facturación</h4>
+                <p>Conexión directa con HGI para envío automático de pedidos completados a facturación.</p>
+            </div>
+
+            <div class="feature-card">
+                <h4><span class="feature-icon">🌙</span> Modo Oscuro</h4>
+                <p>Interfaz optimizada para ambientes con poca luz, reduce fatiga visual durante turnos largos.</p>
+            </div>
+        </div>
+
+        <h2>Módulos Principales</h2>
+
+        <h3>1. Módulo de Picking</h3>
+        <p>Interfaz intuitiva para operadores de bodega que muestra pedidos pendientes con toda la información necesaria:</p>
+        <ul>
+            <li>Lista de productos con imágenes, cantidades y códigos de barras</li>
+            <li>Escaneo progresivo con validación en cada paso</li>
+            <li>Indicador de progreso visual en tiempo real</li>
+            <li>Alertas de productos con stock bajo o insuficiente</li>
+        </ul>
+
+        <h3>2. Módulo de Trazabilidad</h3>
+        <p>Control completo del inventario y ubicación de productos:</p>
+        <ul>
+            <li>Vista de inventario por categoría y ubicación</li>
+            <li>Historial completo de movimientos de cada producto</li>
+            <li>Búsqueda rápida por código de barras o nombre</li>
+            <li>Reportes de stock en tiempo real</li>
+        </ul>
+
+        <h3>3. Módulo de Integración HGI</h3>
+        <p>Conexión bidireccional con el sistema de facturación:</p>
+        <ul>
+            <li>Envío automático de pedidos completados</li>
+            <li>Sincronización de productos y precios</li>
+            <li>Notificaciones de facturas generadas</li>
+        </ul>
+    </div>
+
+    <!-- Página 3: Cronograma y Precios -->
+    <div class="page">
+        <h2>Cronograma de Implementación</h2>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-phase">FASE 1</div>
+                <div class="timeline-content">
+                    <h4>Semana 1-2: Desarrollo Core</h4>
+                    <p>Implementación de módulos de picking y trazabilidad. Escaneo de códigos de barras. Interfaz responsive.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-phase">FASE 2</div>
+                <div class="timeline-content">
+                    <h4>Semana 3: Integración HGI</h4>
+                    <p>Desarrollo de API de integración con sistema de facturación. Pruebas de sincronización.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-phase">FASE 3</div>
+                <div class="timeline-content">
+                    <h4>Semana 4: Testing y Ajustes</h4>
+                    <p>Pruebas exhaustivas en dispositivos reales. Optimización de rendimiento. Correcciones.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-phase">FASE 4</div>
+                <div class="timeline-content">
+                    <h4>Semana 5: Capacitación y Deploy</h4>
+                    <p>Capacitación a usuarios. Despliegue en producción. Documentación completa.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="price-section">
+            <div class="price-header">Inversión Total</div>
+            <div class="price-amount">$XXX,XXX</div>
+            <div class="price-detail">Pago único por desarrollo completo</div>
+
+            <div class="includes-list">
+                <h4>Incluye:</h4>
+                <ul>
+                    <li>Desarrollo completo del sistema</li>
+                    <li>Diseño responsive optimizado para móviles</li>
+                    <li>Integración con HGI</li>
+                    <li>Escaneo de códigos de barras</li>
+                    <li>Hosting y dominio por 1 año</li>
+                    <li>Capacitación a usuarios</li>
+                    <li>Soporte técnico por 3 meses</li>
+                    <li>Documentación completa</li>
+                    <li>Actualizaciones menores sin costo</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>Soporte y Mantenimiento</h2>
+        <p>Posterior al período de soporte incluido:</p>
+        <ul>
+            <li>Soporte técnico mensual: $XXX/mes</li>
+            <li>Actualizaciones y nuevas funcionalidades: A cotizar según alcance</li>
+            <li>Hosting y mantenimiento de servidor: Incluido en soporte mensual</li>
+        </ul>
+
+        <div class="footer">
+            <p>Este documento es confidencial y está dirigido únicamente a J Agro</p>
+            <p>© 2025 J Agro - Sistema de Picking y Trazabilidad</p>
+        </div>
+    </div>
+</body>
+</html>

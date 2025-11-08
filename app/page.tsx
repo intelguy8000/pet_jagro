@@ -23,9 +23,9 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800">
+    <main className="flex min-h-screen flex-col" style={{ background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)' }}>
       {/* Header con logo J Agro */}
-      <header className="bg-white dark:bg-gray-800 shadow-md border-b-4" style={{ borderColor: '#106BA4' }}>
+      <header className="shadow-md border-b-4" style={{ backgroundColor: '#252525', borderColor: '#C46849' }}>
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 sm:space-x-4">
@@ -37,10 +37,10 @@ export default function Home() {
                 className="object-contain sm:w-[120px] sm:h-[80px]"
               />
               <div>
-                <h1 className="text-lg sm:text-2xl font-bold" style={{ color: '#106BA4' }}>
+                <h1 className="text-lg sm:text-2xl font-bold" style={{ color: '#C46849', letterSpacing: '-0.5px' }}>
                   Sistema de Picking
                 </h1>
-                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 hidden sm:block">
+                <p className="text-xs sm:text-sm hidden sm:block" style={{ color: '#a0a0a0' }}>
                   Gestión de Pedidos y Trazabilidad
                 </p>
               </div>
@@ -49,7 +49,8 @@ export default function Home() {
               {/* Botón de tema */}
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                className="p-2 rounded-lg transition-all hover:scale-105"
+                style={{ backgroundColor: '#2a2a2a' }}
                 title={theme === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
               >
                 {theme === 'light' ? (
@@ -59,8 +60,8 @@ export default function Home() {
                 )}
               </button>
               <div className="hidden sm:flex items-center space-x-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm text-gray-600 dark:text-gray-300">Conectado</span>
+                <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: '#C46849' }}></div>
+                <span className="text-sm" style={{ color: '#d0d0d0' }}>Conectado</span>
               </div>
             </div>
           </div>
@@ -68,56 +69,61 @@ export default function Home() {
       </header>
 
       {/* Tabs de navegación */}
-      <div className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-sm overflow-x-auto">
+      <div className="shadow-sm overflow-x-auto" style={{ backgroundColor: '#252525', borderBottom: '1px solid #3a3a3a' }}>
         <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
           <div className="flex space-x-1 min-w-max sm:min-w-0">
             <button
               onClick={() => setActiveTab('picking')}
-              className={`px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base ${
+              className="px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base rounded-t-lg"
+              style={
                 activeTab === 'picking'
-                  ? 'border-blue-600 text-blue-600 bg-blue-50 dark:bg-blue-900 dark:text-blue-300'
-                  : 'border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700'
-              }`}
+                  ? { borderColor: '#C46849', color: '#C46849', backgroundColor: 'rgba(196, 104, 73, 0.1)' }
+                  : { borderColor: 'transparent', color: '#a0a0a0' }
+              }
             >
               📦 Picking
             </button>
             <button
               onClick={() => setActiveTab('billing')}
-              className={`px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base ${
+              className="px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base rounded-t-lg"
+              style={
                 activeTab === 'billing'
-                  ? 'border-blue-600 text-blue-600 bg-blue-50 dark:bg-blue-900 dark:text-blue-300'
-                  : 'border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700'
-              }`}
+                  ? { borderColor: '#C46849', color: '#C46849', backgroundColor: 'rgba(196, 104, 73, 0.1)' }
+                  : { borderColor: 'transparent', color: '#a0a0a0' }
+              }
             >
               💰 Facturación
             </button>
             <button
               onClick={() => setActiveTab('tracking')}
-              className={`px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base ${
+              className="px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base rounded-t-lg"
+              style={
                 activeTab === 'tracking'
-                  ? 'border-blue-600 text-blue-600 bg-blue-50 dark:bg-blue-900 dark:text-blue-300'
-                  : 'border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700'
-              }`}
+                  ? { borderColor: '#C46849', color: '#C46849', backgroundColor: 'rgba(196, 104, 73, 0.1)' }
+                  : { borderColor: 'transparent', color: '#a0a0a0' }
+              }
             >
               📊 Trazabilidad
             </button>
             <button
               onClick={() => setActiveTab('integrations')}
-              className={`px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base ${
+              className="px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base rounded-t-lg"
+              style={
                 activeTab === 'integrations'
-                  ? 'border-blue-600 text-blue-600 bg-blue-50 dark:bg-blue-900 dark:text-blue-300'
-                  : 'border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700'
-              }`}
+                  ? { borderColor: '#C46849', color: '#C46849', backgroundColor: 'rgba(196, 104, 73, 0.1)' }
+                  : { borderColor: 'transparent', color: '#a0a0a0' }
+              }
             >
               🔗 Integraciones
             </button>
             <button
               onClick={() => setActiveTab('design')}
-              className={`px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base ${
+              className="px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base rounded-t-lg"
+              style={
                 activeTab === 'design'
-                  ? 'border-blue-600 text-blue-600 bg-blue-50 dark:bg-blue-900 dark:text-blue-300'
-                  : 'border-transparent text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700'
-              }`}
+                  ? { borderColor: '#C46849', color: '#C46849', backgroundColor: 'rgba(196, 104, 73, 0.1)' }
+                  : { borderColor: 'transparent', color: '#a0a0a0' }
+              }
             >
               🎨 Diseño
             </button>

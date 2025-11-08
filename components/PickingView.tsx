@@ -33,11 +33,11 @@ export default function PickingView({ orders, onUpdateOrder }: PickingViewProps)
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-blue-500';
-      case 'in_progress': return 'bg-yellow-500';
-      case 'completed': return 'bg-green-500';
-      case 'cancelled': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'pending': return '#C46849';
+      case 'in_progress': return '#f59e0b';
+      case 'completed': return '#10b981';
+      case 'cancelled': return '#ef4444';
+      default: return '#6b7280';
     }
   };
 
@@ -65,25 +65,25 @@ export default function PickingView({ orders, onUpdateOrder }: PickingViewProps)
     <div className="space-y-4 sm:space-y-6">
       {/* Estadísticas */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6 border-l-4 border-blue-500">
-          <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-1">Pedidos Pendientes</div>
-          <div className="text-2xl sm:text-3xl font-bold text-blue-600 dark:text-blue-400">{pendingOrders.length}</div>
+        <div className="rounded-lg shadow p-4 sm:p-6 border-l-4" style={{ backgroundColor: '#252525', borderColor: '#C46849' }}>
+          <div className="text-xs sm:text-sm mb-1" style={{ color: '#a0a0a0' }}>Pedidos Pendientes</div>
+          <div className="text-2xl sm:text-3xl font-bold" style={{ color: '#C46849' }}>{pendingOrders.length}</div>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6 border-l-4 border-yellow-500">
-          <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-1">En Curso</div>
-          <div className="text-2xl sm:text-3xl font-bold text-yellow-600 dark:text-yellow-400">{inProgressOrders.length}</div>
+        <div className="rounded-lg shadow p-4 sm:p-6 border-l-4" style={{ backgroundColor: '#252525', borderColor: '#f59e0b' }}>
+          <div className="text-xs sm:text-sm mb-1" style={{ color: '#a0a0a0' }}>En Curso</div>
+          <div className="text-2xl sm:text-3xl font-bold" style={{ color: '#f59e0b' }}>{inProgressOrders.length}</div>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6 border-l-4 border-green-500">
-          <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-1">Valor Total Pendiente</div>
-          <div className="text-xl sm:text-3xl font-bold text-green-600 dark:text-green-400">
+        <div className="rounded-lg shadow p-4 sm:p-6 border-l-4" style={{ backgroundColor: '#252525', borderColor: '#10b981' }}>
+          <div className="text-xs sm:text-sm mb-1" style={{ color: '#a0a0a0' }}>Valor Total Pendiente</div>
+          <div className="text-xl sm:text-3xl font-bold" style={{ color: '#10b981' }}>
             {formatPrice(pendingOrders.reduce((sum, o) => sum + o.totalValue, 0))}
           </div>
         </div>
       </div>
 
       {/* Lista de pedidos pendientes */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 sm:p-6">
-        <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-gray-900 dark:text-gray-100">Pedidos Disponibles</h2>
+      <div className="rounded-lg shadow-lg p-3 sm:p-6" style={{ backgroundColor: '#252525' }}>
+        <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4" style={{ color: '#f5f5f5' }}>Pedidos Disponibles</h2>
 
         {pendingOrders.length === 0 ? (
           <div className="text-center py-8 sm:py-12">
@@ -95,17 +95,20 @@ export default function PickingView({ orders, onUpdateOrder }: PickingViewProps)
             {pendingOrders.map((order) => (
               <div
                 key={order.id}
-                className="border-2 border-gray-200 dark:border-gray-600 rounded-lg p-3 sm:p-4 hover:shadow-md transition-all cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 dark:bg-gray-700"
+                className="border-2 rounded-lg p-3 sm:p-4 hover:shadow-md transition-all cursor-pointer"
+                style={{ backgroundColor: '#2a2a2a', borderColor: '#3a3a3a' }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = '#C46849'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = '#3a3a3a'}
                 onClick={() => setSelectedOrder(order)}
               >
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                   <div className="flex-1">
                     <div className="flex items-center flex-wrap gap-2 mb-2">
-                      <span className="text-lg sm:text-xl font-bold text-blue-600 dark:text-blue-400">{order.orderNumber}</span>
+                      <span className="text-lg sm:text-xl font-bold" style={{ color: '#C46849' }}>{order.orderNumber}</span>
                       <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-semibold border ${getPriorityColor(order.priority)}`}>
                         {order.priority === 'high' ? '🔴 URGENTE' : order.priority === 'medium' ? '🟡 MEDIA' : '🟢 BAJA'}
                       </span>
-                      <span className={`w-3 h-3 rounded-full ${getStatusColor(order.status)}`} />
+                      <span className="w-3 h-3 rounded-full" style={{ backgroundColor: getStatusColor(order.status) }} />
                     </div>
 
                     <div className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
@@ -134,7 +137,10 @@ export default function PickingView({ orders, onUpdateOrder }: PickingViewProps)
                   </div>
 
                   <button
-                    className="w-full sm:w-auto sm:ml-4 px-4 sm:px-6 py-3 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-semibold text-sm sm:text-base"
+                    className="w-full sm:w-auto sm:ml-4 px-4 sm:px-6 py-3 text-white rounded-lg transition-colors font-semibold text-sm sm:text-base"
+                    style={{ backgroundColor: '#C46849' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a54d32'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#C46849'}
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedOrder(order);
@@ -151,13 +157,14 @@ export default function PickingView({ orders, onUpdateOrder }: PickingViewProps)
 
       {/* Pedidos en curso */}
       {inProgressOrders.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 sm:p-6">
-          <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-yellow-600 dark:text-yellow-400">Pedidos en Curso</h2>
+        <div className="rounded-lg shadow-lg p-3 sm:p-6" style={{ backgroundColor: '#252525' }}>
+          <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4" style={{ color: '#f59e0b' }}>Pedidos en Curso</h2>
           <div className="space-y-2 sm:space-y-3">
             {inProgressOrders.map((order) => (
               <div
                 key={order.id}
-                className="border-2 border-yellow-300 dark:border-yellow-600 bg-yellow-50 dark:bg-yellow-900 dark:bg-opacity-30 rounded-lg p-3 sm:p-4 cursor-pointer hover:shadow-md transition-all"
+                className="border-2 rounded-lg p-3 sm:p-4 cursor-pointer hover:shadow-md transition-all"
+                style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', borderColor: '#f59e0b' }}
                 onClick={() => setSelectedOrder(order)}
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">

@@ -96,7 +96,10 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <button
           onClick={onBack}
-          className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold text-base sm:text-lg"
+          className="flex items-center space-x-2 font-semibold text-base sm:text-lg transition-colors"
+          style={{ color: '#C46849' }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#a54d32'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#C46849'}
         >
           <span className="text-xl">←</span>
           <span>Volver a Pedidos</span>
@@ -111,10 +114,10 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
       </div>
 
       {/* Información del pedido */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
+      <div className="rounded-lg shadow-lg p-4 sm:p-6" style={{ backgroundColor: '#252525' }}>
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4 sm:mb-6">
           <div className="flex-1">
-            <h1 className="text-2xl sm:text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">{order.orderNumber}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: '#C46849', letterSpacing: '-0.5px' }}>{order.orderNumber}</h1>
             <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">{order.customer.name}</h2>
             <div className="space-y-1 text-sm sm:text-base text-gray-600 dark:text-gray-300">
               <div>📞 {order.customer.phone}</div>
@@ -133,12 +136,12 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
           <div className="mb-4 sm:mb-6">
             <div className="flex items-center justify-between text-xs sm:text-sm mb-2">
               <span className="font-semibold dark:text-gray-200">Progreso del Picking</span>
-              <span className="text-blue-600 dark:text-blue-400 font-bold text-sm sm:text-base">{Math.round(progress)}%</span>
+              <span className="font-bold text-sm sm:text-base" style={{ color: '#C46849' }}>{Math.round(progress)}%</span>
             </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 sm:h-4">
+            <div className="w-full rounded-full h-3 sm:h-4" style={{ backgroundColor: '#3a3a3a' }}>
               <div
-                className="bg-blue-600 dark:bg-blue-500 h-3 sm:h-4 rounded-full transition-all duration-500"
-                style={{ width: `${progress}%` }}
+                className="h-3 sm:h-4 rounded-full transition-all duration-500"
+                style={{ backgroundColor: '#C46849', width: `${progress}%` }}
               />
             </div>
           </div>
@@ -158,7 +161,10 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
         {order.status === 'completed' && (
           <button
             onClick={handleSendToBilling}
-            className="w-full py-3 sm:py-4 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-bold text-base sm:text-lg"
+            className="w-full py-3 sm:py-4 text-white rounded-lg transition-colors font-bold text-base sm:text-lg"
+            style={{ backgroundColor: '#C46849' }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a54d32'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#C46849'}
           >
             💰 Pasar a Facturación
           </button>
@@ -166,8 +172,8 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
       </div>
 
       {/* Lista de items */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 sm:p-6">
-        <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 dark:text-gray-100">Items del Pedido</h3>
+      <div className="rounded-lg shadow-lg p-3 sm:p-6" style={{ backgroundColor: '#252525' }}>
+        <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4" style={{ color: '#f5f5f5' }}>Items del Pedido</h3>
 
         <div className="space-y-3 sm:space-y-4">
           {order.items.map((item) => (
@@ -177,7 +183,7 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
                 item.scanned
                   ? 'border-green-400 dark:border-green-500 bg-green-50 dark:bg-green-900 dark:bg-opacity-20'
                   : order.status === 'in_progress'
-                  ? 'border-blue-300 dark:border-blue-500 dark:bg-gray-700'
+                  ? 'border-gray-500 dark:bg-gray-700'
                   : 'border-gray-200 dark:border-gray-600 dark:bg-gray-700'
               }`}
             >
@@ -214,7 +220,7 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
                     </div>
                     <div>
                       <span className="text-gray-600 dark:text-gray-300">Cantidad: </span>
-                      <span className="font-bold text-blue-600 dark:text-blue-400 text-sm sm:text-base">
+                      <span className="font-bold text-sm sm:text-base" style={{ color: '#C46849' }}>
                         {item.scannedQuantity} / {item.quantity}
                       </span>
                     </div>
@@ -236,7 +242,10 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
                 {order.status === 'in_progress' && !item.scanned && (
                   <button
                     onClick={() => handleStartScanning(item)}
-                    className="w-full sm:w-auto sm:ml-4 px-4 sm:px-6 py-3 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-semibold text-sm sm:text-base"
+                    className="w-full sm:w-auto sm:ml-4 px-4 sm:px-6 py-3 text-white rounded-lg transition-colors font-semibold text-sm sm:text-base"
+                    style={{ backgroundColor: '#C46849' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a54d32'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#C46849'}
                   >
                     📷 Escanear
                   </button>
