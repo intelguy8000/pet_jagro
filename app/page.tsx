@@ -6,12 +6,11 @@ import PickingView from '@/components/PickingView';
 import TrackingView from '@/components/TrackingView';
 import FacturacionView from '@/components/FacturacionView';
 import IntegrationsView from '@/components/IntegrationsView';
-import DesignDemo from '@/components/DesignDemo';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Order } from '@/types';
 import { mockOrders } from '@/lib/mockData';
 
-type Tab = 'picking' | 'tracking' | 'billing' | 'integrations' | 'design';
+type Tab = 'picking' | 'tracking' | 'billing' | 'integrations';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>('picking');
@@ -116,17 +115,6 @@ export default function Home() {
             >
               🔗 Integraciones
             </button>
-            <button
-              onClick={() => setActiveTab('design')}
-              className="px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base rounded-t-lg"
-              style={
-                activeTab === 'design'
-                  ? { borderColor: '#C46849', color: '#C46849', backgroundColor: 'rgba(196, 104, 73, 0.1)' }
-                  : { borderColor: 'transparent', color: '#a0a0a0' }
-              }
-            >
-              🎨 Diseño
-            </button>
           </div>
         </div>
       </div>
@@ -137,7 +125,6 @@ export default function Home() {
         {activeTab === 'billing' && <FacturacionView orders={orders} onUpdateOrder={handleUpdateOrder} />}
         {activeTab === 'tracking' && <TrackingView orders={orders} />}
         {activeTab === 'integrations' && <IntegrationsView />}
-        {activeTab === 'design' && <DesignDemo />}
       </div>
     </main>
   );
