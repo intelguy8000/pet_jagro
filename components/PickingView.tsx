@@ -23,12 +23,8 @@ export default function PickingView({ orders, onUpdateOrder }: PickingViewProps)
   };
 
   const getPriorityIcon = (priority: string) => {
-    switch (priority) {
-      case 'high': return '🔴';
-      case 'medium': return '🟡';
-      case 'low': return '🟢';
-      default: return '⚪';
-    }
+    // Prioridades sin color por ahora - no están definidas
+    return '○';
   };
 
   const getStatusColor = (status: string) => {

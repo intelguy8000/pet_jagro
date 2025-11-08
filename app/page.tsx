@@ -6,7 +6,6 @@ import PickingView from '@/components/PickingView';
 import TrackingView from '@/components/TrackingView';
 import FacturacionView from '@/components/FacturacionView';
 import IntegrationsView from '@/components/IntegrationsView';
-import { useTheme } from '@/contexts/ThemeContext';
 import { Order } from '@/types';
 import { mockOrders } from '@/lib/mockData';
 
@@ -14,7 +13,6 @@ type Tab = 'picking' | 'tracking' | 'billing' | 'integrations';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>('picking');
-  const { theme, toggleTheme } = useTheme();
   const [orders, setOrders] = useState<Order[]>(mockOrders);
 
   const handleUpdateOrder = (updatedOrder: Order) => {
@@ -24,7 +22,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col" style={{ background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)' }}>
       {/* Header con logo J Agro */}
-      <header className="shadow-md border-b-4" style={{ backgroundColor: '#252525', borderColor: '#C46849' }}>
+      <header className="shadow-md border-b" style={{ backgroundColor: '#252525', borderColor: 'rgba(255, 255, 255, 0.1)' }}>
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 sm:space-x-4">
@@ -45,21 +43,8 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4">
-              {/* Botón de tema */}
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-lg transition-all hover:scale-105"
-                style={{ backgroundColor: '#2a2a2a' }}
-                title={theme === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}
-              >
-                {theme === 'light' ? (
-                  <span className="text-xl sm:text-2xl">🌙</span>
-                ) : (
-                  <span className="text-xl sm:text-2xl">☀️</span>
-                )}
-              </button>
-              <div className="hidden sm:flex items-center space-x-2">
-                <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: '#C46849' }}></div>
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#C46849' }}></div>
                 <span className="text-sm" style={{ color: '#d0d0d0' }}>Conectado</span>
               </div>
             </div>
@@ -73,47 +58,47 @@ export default function Home() {
           <div className="flex space-x-1 min-w-max sm:min-w-0">
             <button
               onClick={() => setActiveTab('picking')}
-              className="px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base rounded-t-lg"
+              className="px-4 sm:px-6 py-3 font-semibold transition-all border-b-2 whitespace-nowrap text-sm sm:text-base"
               style={
                 activeTab === 'picking'
-                  ? { borderColor: '#C46849', color: '#C46849', backgroundColor: 'rgba(196, 104, 73, 0.1)' }
+                  ? { borderColor: '#C46849', color: '#f5f5f5', backgroundColor: 'rgba(196, 104, 73, 0.08)' }
                   : { borderColor: 'transparent', color: '#a0a0a0' }
               }
             >
-              📦 Picking
+              Picking
             </button>
             <button
               onClick={() => setActiveTab('billing')}
-              className="px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base rounded-t-lg"
+              className="px-4 sm:px-6 py-3 font-semibold transition-all border-b-2 whitespace-nowrap text-sm sm:text-base"
               style={
                 activeTab === 'billing'
-                  ? { borderColor: '#C46849', color: '#C46849', backgroundColor: 'rgba(196, 104, 73, 0.1)' }
+                  ? { borderColor: '#C46849', color: '#f5f5f5', backgroundColor: 'rgba(196, 104, 73, 0.08)' }
                   : { borderColor: 'transparent', color: '#a0a0a0' }
               }
             >
-              💰 Facturación
+              Facturación
             </button>
             <button
               onClick={() => setActiveTab('tracking')}
-              className="px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base rounded-t-lg"
+              className="px-4 sm:px-6 py-3 font-semibold transition-all border-b-2 whitespace-nowrap text-sm sm:text-base"
               style={
                 activeTab === 'tracking'
-                  ? { borderColor: '#C46849', color: '#C46849', backgroundColor: 'rgba(196, 104, 73, 0.1)' }
+                  ? { borderColor: '#C46849', color: '#f5f5f5', backgroundColor: 'rgba(196, 104, 73, 0.08)' }
                   : { borderColor: 'transparent', color: '#a0a0a0' }
               }
             >
-              📊 Trazabilidad
+              Trazabilidad
             </button>
             <button
               onClick={() => setActiveTab('integrations')}
-              className="px-4 sm:px-6 py-3 font-semibold transition-all border-b-4 whitespace-nowrap text-sm sm:text-base rounded-t-lg"
+              className="px-4 sm:px-6 py-3 font-semibold transition-all border-b-2 whitespace-nowrap text-sm sm:text-base"
               style={
                 activeTab === 'integrations'
-                  ? { borderColor: '#C46849', color: '#C46849', backgroundColor: 'rgba(196, 104, 73, 0.1)' }
+                  ? { borderColor: '#C46849', color: '#f5f5f5', backgroundColor: 'rgba(196, 104, 73, 0.08)' }
                   : { borderColor: 'transparent', color: '#a0a0a0' }
               }
             >
-              🔗 Integraciones
+              Integraciones
             </button>
           </div>
         </div>
