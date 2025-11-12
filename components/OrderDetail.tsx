@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Order, OrderItem, categoryNames } from '@/types';
 import BarcodeScanner from './BarcodeScanner';
+import { mockProducts } from '@/lib/mockData';
 
 interface OrderDetailProps {
   order: Order;
@@ -48,13 +49,13 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
     setShowScanner(true);
   };
 
-  const handleScanSuccess = (barcode: string) => {
+  const handleScanSuccess = (barcode: string, quantity: number = 1) => {
     if (!currentItem) return;
 
     if (barcode === currentItem.product.barcode) {
       const updatedItems = order.items.map(item => {
         if (item.id === currentItem.id) {
-          const newScannedQty = Math.min(item.scannedQuantity + 1, item.quantity);
+          const newScannedQty = Math.min(item.scannedQuantity + quantity, item.quantity);
           return {
             ...item,
             scannedQuantity: newScannedQty,
@@ -275,6 +276,7 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
           }}
           expectedBarcode={currentItem.product.barcode}
           productName={currentItem.product.name}
+          allProducts={mockProducts}
         />
       )}
     </div>

@@ -265,6 +265,29 @@ export const mockProducts: Product[] = [
     barcode: '7891234567805',
     lastUpdated: new Date(),
   },
+  // PRODUCTOS CON CÓDIGO DUPLICADO (para probar Caso 4)
+  {
+    id: '23',
+    name: 'Shampoo para Perros Hipoalergénico 250mL',
+    category: 'grooming',
+    stock: 18,
+    minStock: 10,
+    price: 35000,
+    supplier: 'Pet Clean Colombia',
+    barcode: '9999999999999', // CÓDIGO DUPLICADO
+    lastUpdated: new Date(),
+  },
+  {
+    id: '24',
+    name: 'Shampoo para Perros Hipoalergénico 500mL',
+    category: 'grooming',
+    stock: 12,
+    minStock: 8,
+    price: 55000,
+    supplier: 'Pet Clean Colombia',
+    barcode: '9999999999999', // MISMO CÓDIGO - Caso 4
+    lastUpdated: new Date(),
+  },
 ];
 
 // Usuarios de ejemplo
@@ -365,6 +388,7 @@ export const mockOrders: Order[] = [
     items: [
       createOrderItem(mockProducts[0], 5), // Alimento perros
       createOrderItem(mockProducts[3], 3), // Antipulgas
+      createOrderItem(mockProducts[22], 2), // Shampoo 250mL - CÓDIGO DUPLICADO
     ],
     status: 'in_progress',
     createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000), // Hace 3 horas

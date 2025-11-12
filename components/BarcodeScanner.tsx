@@ -1,12 +1,16 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import QuantityModal from './QuantityModal';
+import ProductSelectionModal from './ProductSelectionModal';
+import { Product } from '@/types';
 
 interface BarcodeScannerProps {
-  onScanSuccess: (barcode: string) => void;
+  onScanSuccess: (barcode: string, quantity?: number) => void;
   onClose: () => void;
   expectedBarcode: string;
   productName: string;
+  allProducts?: Product[]; // Lista completa de productos para búsqueda
 }
 
 // Función para calcular la mediana de los errores
@@ -25,16 +29,121 @@ export default function BarcodeScanner({
   onClose,
   expectedBarcode,
   productName,
+  allProducts = [],
 }: BarcodeScannerProps) {
   const [manualCode, setManualCode] = useState('');
   const [error, setError] = useState('');
   const [isScanning, setIsScanning] = useState(false);
   const scannerRef = useRef<HTMLDivElement | null>(null);
 
+  // Estado para el modal de cantidad
+  const [showQuantityModal, setShowQuantityModal] = useState(false);
+  const [scannedBarcode, setScannedBarcode] = useState('');
+
+  // Estado para modal de selección de productos (códigos duplicados)
+  const [showProductSelection, setShowProductSelection] = useState(false);
+  const [duplicateProducts, setDuplicateProducts] = useState<Product[]>([]);
+
+  // Estado para búsqueda de productos
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  // Función para búsqueda inteligente
+  const handleSearchChange = (value: string) => {
+    setManualCode(value);
+
+    // Si el campo está vacío, ocultar sugerencias
+    if (value.length < 2) {
+      setShowSuggestions(false);
+      setSearchResults([]);
+      return;
+    }
+
+    // Detectar si es búsqueda por código (solo números) o por nombre (contiene texto)
+    const isNumericSearch = /^\d+$/.test(value);
+
+    if (allProducts.length > 0) {
+      let filtered: Product[] = [];
+
+      if (isNumericSearch) {
+        // Buscar por código de barras que coincida con el esperado
+        filtered = allProducts.filter(p =>
+          p.barcode === expectedBarcode && p.barcode.includes(value)
+        );
+      } else {
+        // Buscar por nombre, pero solo productos con el mismo código que el esperado
+        filtered = allProducts.filter(p =>
+          p.barcode === expectedBarcode &&
+          p.name.toLowerCase().includes(value.toLowerCase())
+        );
+      }
+
+      setSearchResults(filtered.slice(0, 5)); // Máximo 5 resultados
+      setShowSuggestions(filtered.length > 0);
+    }
+  };
+
+  // Seleccionar un producto de las sugerencias
+  const handleSelectProduct = (product: Product) => {
+    setManualCode(product.barcode);
+    setShowSuggestions(false);
+    setSearchResults([]);
+    // Como ya filtramos por código esperado, siempre es correcto
+    // Ir directo a modal de cantidad (saltarse modal de duplicados)
+    setScannedBarcode(product.barcode);
+    setShowQuantityModal(true);
+  };
+
+  // Función para abrir el modal de cantidad después de un escaneo exitoso
+  const handleSuccessfulScan = (barcode: string) => {
+    setScannedBarcode(barcode);
+
+    // Verificar si hay productos duplicados con este código
+    if (allProducts.length > 0) {
+      const matchingProducts = allProducts.filter(p => p.barcode === barcode);
+
+      if (matchingProducts.length > 1) {
+        // Revisar si hay un default guardado en sessionStorage
+        const savedDefault = sessionStorage.getItem(`barcode_default_${barcode}`);
+
+        if (savedDefault) {
+          // Usar el producto guardado
+          const defaultProduct = matchingProducts.find(p => p.id === savedDefault);
+          if (defaultProduct) {
+            // Proceder directamente con el modal de cantidad
+            setShowQuantityModal(true);
+            return;
+          }
+        }
+
+        // Mostrar modal de selección de productos
+        setDuplicateProducts(matchingProducts);
+        setShowProductSelection(true);
+        return;
+      }
+    }
+
+    // No hay duplicados, proceder con modal de cantidad
+    setShowQuantityModal(true);
+  };
+
+  // Función para manejar la selección de un producto cuando hay duplicados
+  const handleProductSelection = (product: Product) => {
+    setShowProductSelection(false);
+    // Proceder con el modal de cantidad
+    setShowQuantityModal(true);
+  };
+
+  // Función para confirmar la cantidad y cerrar
+  const handleQuantityConfirm = (quantity: number) => {
+    setShowQuantityModal(false);
+    onScanSuccess(scannedBarcode, quantity);
+  };
+
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (manualCode === expectedBarcode) {
-      onScanSuccess(manualCode);
+      handleSuccessfulScan(manualCode);
     } else {
       setError('Código incorrecto. Inténtalo de nuevo.');
       setTimeout(() => setError(''), 3000);
@@ -43,7 +152,7 @@ export default function BarcodeScanner({
 
   // Simular escaneo automático con el código correcto para demo
   const handleQuickScan = () => {
-    onScanSuccess(expectedBarcode);
+    handleSuccessfulScan(expectedBarcode);
   };
 
   // Iniciar escaneo con Quagga2
@@ -81,7 +190,7 @@ export default function BarcodeScanner({
 
           // Verificar si es el código correcto
           if (code === expectedBarcode) {
-            onScanSuccess(code);
+            handleSuccessfulScan(code);
           } else {
             setError(`❌ Código incorrecto. Esperado: ${expectedBarcode}, Detectado: ${code}`);
             setTimeout(() => setError(''), 3000);
@@ -175,8 +284,8 @@ export default function BarcodeScanner({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.75)' }}>
-      <div className="rounded-xl shadow-2xl max-w-2xl w-full p-4 sm:p-6 max-h-[95vh] overflow-y-auto" style={{ backgroundColor: '#252525' }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto" style={{ backgroundColor: 'rgba(0, 0, 0, 0.75)' }}>
+      <div className="rounded-xl shadow-2xl max-w-2xl w-full p-4 sm:p-6 my-auto" style={{ backgroundColor: '#252525' }}>
         <div className="flex items-center justify-between mb-4 sm:mb-6">
           <h2 className="text-lg sm:text-2xl font-bold" style={{ color: '#f5f5f5', letterSpacing: '-0.5px' }}>Escanear Código</h2>
           <button
@@ -261,21 +370,79 @@ export default function BarcodeScanner({
         {/* Ingreso manual */}
         {!isScanning && (
           <div className="pt-3 sm:pt-4" style={{ borderTop: '1px solid #3a3a3a' }}>
-            <p className="text-xs sm:text-sm mb-2 sm:mb-3" style={{ color: '#a0a0a0' }}>¿No funciona la cámara? Ingresa el código manualmente:</p>
+            <p className="text-xs sm:text-sm mb-2 sm:mb-3" style={{ color: '#a0a0a0' }}>
+              {allProducts.length > 0
+                ? 'Ingresa código o busca por nombre de producto:'
+                : '¿No funciona la cámara? Ingresa el código manualmente:'}
+            </p>
 
             <form onSubmit={handleManualSubmit} className="flex flex-col sm:flex-row gap-2">
-              <input
-                type="text"
-                value={manualCode}
-                onChange={(e) => setManualCode(e.target.value)}
-                placeholder="Ingresa el código de barras"
-                className="flex-1 px-3 sm:px-4 py-2 sm:py-3 rounded-lg focus:outline-none text-sm sm:text-base"
-                style={{
-                  border: '1px solid #3a3a3a',
-                  backgroundColor: '#2a2a2a',
-                  color: '#f5f5f5'
-                }}
-              />
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  value={manualCode}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  onFocus={() => {
+                    if (searchResults.length > 0) {
+                      setShowSuggestions(true);
+                    }
+                  }}
+                  onBlur={() => {
+                    // Retrasar el cierre para permitir click en sugerencias
+                    setTimeout(() => setShowSuggestions(false), 200);
+                  }}
+                  placeholder={allProducts.length > 0 ? "Código o nombre..." : "Ingresa el código de barras"}
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg focus:outline-none text-sm sm:text-base"
+                  style={{
+                    border: '1px solid #3a3a3a',
+                    backgroundColor: '#2a2a2a',
+                    color: '#f5f5f5'
+                  }}
+                />
+
+                {/* Dropdown de sugerencias */}
+                {showSuggestions && searchResults.length > 0 && (
+                  <div
+                    className="absolute top-full left-0 right-0 mt-1 rounded-lg overflow-hidden shadow-xl max-h-64 overflow-y-auto"
+                    style={{
+                      backgroundColor: '#2a2a2a',
+                      border: '1px solid #3a3a3a',
+                      zIndex: 100
+                    }}
+                  >
+                    {searchResults.map((product, idx) => (
+                      <button
+                        key={product.id}
+                        type="button"
+                        onClick={() => handleSelectProduct(product)}
+                        className="w-full px-3 py-3 text-left transition-colors flex items-start gap-3"
+                        style={{
+                          backgroundColor: idx % 2 === 0 ? 'transparent' : 'rgba(196, 104, 73, 0.05)',
+                          borderBottom: idx < searchResults.length - 1 ? '1px solid #3a3a3a' : 'none'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(196, 104, 73, 0.2)'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = idx % 2 === 0 ? 'transparent' : 'rgba(196, 104, 73, 0.05)'}
+                      >
+                        <div className="flex-1">
+                          <div className="text-sm font-medium mb-1" style={{ color: '#f5f5f5' }}>
+                            {product.name}
+                          </div>
+                          <div className="flex items-center gap-2 text-xs" style={{ color: '#a0a0a0' }}>
+                            <span className="font-mono" style={{ color: '#C46849' }}>
+                              {product.barcode}
+                            </span>
+                            <span>•</span>
+                            <span>Stock: {product.stock}</span>
+                          </div>
+                        </div>
+                        <div className="text-xs px-2 py-1 rounded whitespace-nowrap" style={{ backgroundColor: '#3a3a3a', color: '#C46849' }}>
+                          Seleccionar
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
               <button
                 type="submit"
                 className="px-4 sm:px-6 py-2 sm:py-3 text-white rounded-lg transition-colors font-semibold text-sm sm:text-base whitespace-nowrap"
@@ -299,6 +466,26 @@ export default function BarcodeScanner({
           </div>
         )}
       </div>
+
+      {/* Modal de selección de producto (códigos duplicados) */}
+      {showProductSelection && (
+        <ProductSelectionModal
+          barcode={scannedBarcode}
+          products={duplicateProducts}
+          onSelect={handleProductSelection}
+          onCancel={() => setShowProductSelection(false)}
+        />
+      )}
+
+      {/* Modal de cantidad */}
+      {showQuantityModal && (
+        <QuantityModal
+          productName={productName}
+          barcode={scannedBarcode}
+          onConfirm={handleQuantityConfirm}
+          onCancel={() => setShowQuantityModal(false)}
+        />
+      )}
     </div>
   );
 }

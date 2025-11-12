@@ -114,7 +114,7 @@ export default function PickingView({ orders, onUpdateOrder }: PickingViewProps)
                     <span className="text-xs">{getPriorityIcon(order.priority)}</span>
                     <span className="text-sm" style={{ color: '#d0d0d0' }}>• {order.customer.name}</span>
                   </div>
-                  <div className="text-xs" style={{ color: '#a0a0a0' }}>
+                  <div className="text-xs" style={{ color: '#a0a0a0' }} suppressHydrationWarning>
                     {order.items.length} items • {format(order.createdAt, "HH:mm", { locale: es })}
                   </div>
                 </div>
@@ -153,7 +153,7 @@ export default function PickingView({ orders, onUpdateOrder }: PickingViewProps)
                     <span className="text-xs">{getPriorityIcon(order.priority)}</span>
                     <span className="text-sm" style={{ color: '#d0d0d0' }}>• {order.customer.name}</span>
                   </div>
-                  <div className="text-xs" style={{ color: '#a0a0a0' }}>
+                  <div className="text-xs" style={{ color: '#a0a0a0' }} suppressHydrationWarning>
                     {order.items.length} items • {format(order.createdAt, "d MMM HH:mm", { locale: es })}
                   </div>
                 </div>
