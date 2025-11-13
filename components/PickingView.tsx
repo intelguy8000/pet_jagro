@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Order, orderStatusNames } from '@/types';
+import { Order, orderStatusNames, zoneNames, zoneColors } from '@/types';
 import OrderDetail from './OrderDetail';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -114,8 +114,21 @@ export default function PickingView({ orders, onUpdateOrder }: PickingViewProps)
                     <span className="text-xs">{getPriorityIcon(order.priority)}</span>
                     <span className="text-sm" style={{ color: '#d0d0d0' }}>• {order.customer.name}</span>
                   </div>
-                  <div className="text-xs" style={{ color: '#a0a0a0' }} suppressHydrationWarning>
-                    {order.items.length} items • {format(order.createdAt, "HH:mm", { locale: es })}
+                  <div className="flex items-center gap-2">
+                    <div className="text-xs" style={{ color: '#a0a0a0' }} suppressHydrationWarning>
+                      {order.items.length} items • {format(order.createdAt, "HH:mm", { locale: es })}
+                    </div>
+                    {order.customer.zone && (
+                      <span
+                        className="text-xs px-2 py-0.5 rounded-full font-semibold"
+                        style={{
+                          backgroundColor: `${zoneColors[order.customer.zone]}20`,
+                          color: zoneColors[order.customer.zone],
+                        }}
+                      >
+                        {zoneNames[order.customer.zone]}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="text-right">
@@ -153,8 +166,21 @@ export default function PickingView({ orders, onUpdateOrder }: PickingViewProps)
                     <span className="text-xs">{getPriorityIcon(order.priority)}</span>
                     <span className="text-sm" style={{ color: '#d0d0d0' }}>• {order.customer.name}</span>
                   </div>
-                  <div className="text-xs" style={{ color: '#a0a0a0' }} suppressHydrationWarning>
-                    {order.items.length} items • {format(order.createdAt, "d MMM HH:mm", { locale: es })}
+                  <div className="flex items-center gap-2">
+                    <div className="text-xs" style={{ color: '#a0a0a0' }} suppressHydrationWarning>
+                      {order.items.length} items • {format(order.createdAt, "d MMM HH:mm", { locale: es })}
+                    </div>
+                    {order.customer.zone && (
+                      <span
+                        className="text-xs px-2 py-0.5 rounded-full font-semibold"
+                        style={{
+                          backgroundColor: `${zoneColors[order.customer.zone]}20`,
+                          color: zoneColors[order.customer.zone],
+                        }}
+                      >
+                        {zoneNames[order.customer.zone]}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="text-right">

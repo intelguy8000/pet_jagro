@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Order, OrderItem, categoryNames } from '@/types';
+import { Order, OrderItem, categoryNames, zoneNames, zoneColors } from '@/types';
 import BarcodeScanner from './BarcodeScanner';
 import { mockProducts } from '@/lib/mockData';
 
@@ -135,7 +135,22 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
               </div>
               <div className="flex items-start gap-2">
                 <span>📍</span>
-                <span className="flex-1">{order.customer.address}</span>
+                <div className="flex-1">
+                  <div className="mb-2">{order.customer.address}</div>
+                  {order.customer.zone && (
+                    <div
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
+                      style={{
+                        backgroundColor: `${zoneColors[order.customer.zone]}20`,
+                        color: zoneColors[order.customer.zone],
+                        border: `1px solid ${zoneColors[order.customer.zone]}40`
+                      }}
+                    >
+                      <span>🗺️</span>
+                      <span>Zona {zoneNames[order.customer.zone]}</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -234,6 +249,12 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
                       <span>{categoryNames[item.product.category]}</span>
                       <span>•</span>
                       <span className="font-mono">{item.product.barcode}</span>
+                      {item.product.batchNumber && (
+                        <>
+                          <span>•</span>
+                          <span>Lote: {item.product.batchNumber}</span>
+                        </>
+                      )}
                       <span>•</span>
                       <span>Stock: {item.product.stock}</span>
                     </div>

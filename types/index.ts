@@ -17,6 +17,7 @@ export interface Product {
   price: number;
   supplier?: string;
   barcode: string; // Código de barras para escaneo
+  batchNumber?: string; // Número de lote (viene de HGI)
   imageUrl?: string; // URL de la imagen del producto
   lastUpdated: Date;
 }
@@ -29,6 +30,27 @@ export const categoryNames: Record<Product['category'], string> = {
   healthcare: 'Salud',
   grooming: 'Aseo',
   other: 'Otros'
+};
+
+// Zonas de entrega
+export type DeliveryZone = 'norte' | 'sur' | 'centro' | 'oriente' | 'occidente' | 'extramuros';
+
+export const zoneNames: Record<DeliveryZone, string> = {
+  norte: 'Norte',
+  sur: 'Sur',
+  centro: 'Centro',
+  oriente: 'Oriente',
+  occidente: 'Occidente',
+  extramuros: 'Extramuros'
+};
+
+export const zoneColors: Record<DeliveryZone, string> = {
+  norte: '#3b82f6',      // Azul
+  sur: '#10b981',        // Verde
+  centro: '#f59e0b',     // Naranja
+  oriente: '#8b5cf6',    // Púrpura
+  occidente: '#ec4899',  // Rosa
+  extramuros: '#6b7280'  // Gris
 };
 
 // Estados del pedido
@@ -61,6 +83,7 @@ export interface Order {
     name: string;
     phone?: string;
     address?: string;
+    zone?: DeliveryZone; // Zona de entrega
   };
   items: OrderItem[];
   status: OrderStatus;
@@ -106,4 +129,68 @@ export interface PurchaseSuggestion {
   reason: string;
   urgency: 'low' | 'medium' | 'high';
   estimatedCost: number;
+}
+
+// ========== MÓDULO DE LIQUIDACIONES ==========
+
+// Mensajero
+export interface Messenger {
+  id: string;
+  name: string;
+  phone: string;
+  assignedZone?: DeliveryZone;
+  active: boolean;
+}
+
+// Estado de entrega
+export type DeliveryStatus = 'dispatched' | 'in_route' | 'delivered' | 'returned' | 'pending_payment';
+
+export const deliveryStatusNames: Record<DeliveryStatus, string> = {
+  dispatched: 'Despachado',
+  in_route: 'En Ruta',
+  delivered: 'Entregado',
+  returned: 'Devuelto',
+  pending_payment: 'Pendiente Pago'
+};
+
+export const deliveryStatusColors: Record<DeliveryStatus, string> = {
+  dispatched: '#f59e0b',    // Naranja
+  in_route: '#3b82f6',      // Azul
+  delivered: '#10b981',     // Verde
+  returned: '#ef4444',      // Rojo
+  pending_payment: '#f59e0b' // Naranja
+};
+
+// Método de pago
+export type PaymentMethod = 'cash' | 'transfer' | 'card' | 'credit';
+
+export const paymentMethodNames: Record<PaymentMethod, string> = {
+  cash: 'Efectivo',
+  transfer: 'Transferencia',
+  card: 'Datafono',
+  credit: 'Crédito'
+};
+
+// Nota de crédito
+export interface CreditNote {
+  id: string;
+  reason: string;
+  amount: number;
+  authorizedBy: string;
+  createdAt: Date;
+  description?: string;
+}
+
+// Entrega (delivery)
+export interface Delivery {
+  id: string;
+  order: Order;
+  messenger: Messenger;
+  status: DeliveryStatus;
+  paymentMethod?: PaymentMethod;
+  creditNote?: CreditNote;
+  dispatchedAt: Date;
+  deliveredAt?: Date;
+  collectedAmount?: number;
+  notes?: string;
 }
