@@ -98,7 +98,7 @@ export default function ChatWidget() {
         <div
           className={`fixed bottom-24 right-6 z-50 rounded-lg shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ${
             isExpanded
-              ? 'w-[600px] h-[700px]'
+              ? 'w-[460px] h-[600px]'
               : 'w-96 h-[500px]'
           }`}
           style={{

@@ -77,10 +77,25 @@ export function getProductStock(productName: string): AIFunctionResult {
 export function searchOrders(query: string): AIFunctionResult {
   const lowerQuery = query.toLowerCase();
 
+  // Mapear términos comunes a estados del sistema
+  const statusMap: Record<string, string> = {
+    'en curso': 'in_progress',
+    'en progreso': 'in_progress',
+    'pendiente': 'pending',
+    'completado': 'completed',
+    'listo para facturar': 'ready_for_billing',
+    'facturado': 'billed',
+    'cancelado': 'cancelled'
+  };
+
+  // Buscar si el query corresponde a un estado conocido
+  const mappedStatus = statusMap[lowerQuery];
+
   const results = mockOrders.filter(o =>
     o.customer.name.toLowerCase().includes(lowerQuery) ||
     o.status.toLowerCase().includes(lowerQuery) ||
-    o.orderNumber.toLowerCase().includes(lowerQuery)
+    o.orderNumber.toLowerCase().includes(lowerQuery) ||
+    (mappedStatus && o.status === mappedStatus)
   );
 
   if (results.length === 0) {
