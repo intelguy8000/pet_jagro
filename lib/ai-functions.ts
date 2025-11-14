@@ -96,11 +96,64 @@ export function searchOrders(query: string): AIFunctionResult {
       numero: o.orderNumber,
       cliente: o.customer.name,
       estado: o.status,
-      items: o.items.length,
+      items: o.items.map(item => ({
+        producto: item.product.name,
+        cantidad: item.quantity,
+        precio: item.product.price,
+        categoria: item.product.category,
+        stock: item.product.stock,
+        lote: item.product.batchNumber
+      })),
       total: o.totalValue,
-      zona: o.customer.zone
+      zona: o.customer.zone,
+      direccion: o.customer.address
     })),
     message: `${results.length} pedido(s) encontrado(s)`
+  };
+}
+
+/**
+ * Obtener detalles completos de un pedido específico
+ */
+export function getOrderDetails(orderNumber: string): AIFunctionResult {
+  const order = mockOrders.find(o =>
+    o.orderNumber.toLowerCase() === orderNumber.toLowerCase()
+  );
+
+  if (!order) {
+    return {
+      success: false,
+      message: `Pedido "${orderNumber}" no encontrado`
+    };
+  }
+
+  return {
+    success: true,
+    data: {
+      numero: order.orderNumber,
+      cliente: {
+        nombre: order.customer.name,
+        telefono: order.customer.phone,
+        direccion: order.customer.address,
+        zona: order.customer.zone
+      },
+      estado: order.status,
+      prioridad: order.priority,
+      items: order.items.map(item => ({
+        producto: item.product.name,
+        cantidad: item.quantity,
+        precioUnitario: item.product.price,
+        subtotal: item.product.price * item.quantity,
+        categoria: item.product.category,
+        stockDisponible: item.product.stock,
+        lote: item.product.batchNumber,
+        codigoBarras: item.product.barcode
+      })),
+      valorTotal: order.totalValue,
+      fechaCreacion: order.createdAt,
+      asignadoA: order.assignedTo || 'No asignado'
+    },
+    message: `Detalles del pedido ${order.orderNumber}`
   };
 }
 

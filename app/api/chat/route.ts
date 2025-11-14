@@ -4,6 +4,7 @@ import {
   searchProducts,
   getProductStock,
   searchOrders,
+  getOrderDetails,
   getMessengerInfo,
   getLiquidationSummary,
   createOrder,
@@ -56,6 +57,20 @@ const functions = [
         }
       },
       required: ['query']
+    }
+  },
+  {
+    name: 'getOrderDetails',
+    description: 'Obtener todos los detalles completos de un pedido específico (items, precios, cliente, etc)',
+    parameters: {
+      type: 'object',
+      properties: {
+        orderNumber: {
+          type: 'string',
+          description: 'Número del pedido (ej: PED-2025-001)'
+        }
+      },
+      required: ['orderNumber']
     }
   },
   {
@@ -132,17 +147,28 @@ export async function POST(req: NextRequest) {
 
 Tu objetivo es ayudar con consultas sobre:
 - Productos e inventario
-- Pedidos y su estado
+- Pedidos y su estado (con todos los detalles: items, precios, lotes, etc)
 - Mensajeros y entregas
 - Liquidaciones y pagos
 - Crear pedidos nuevos
 
+Funciones disponibles:
+- searchOrders: Para buscar pedidos (lista básica)
+- getOrderDetails: Para ver TODOS los detalles de un pedido específico (úsala cuando pidan detalles, items, productos)
+- searchProducts: Buscar productos
+- getProductStock: Stock de un producto
+- getMessengerInfo: Info de mensajeros
+- getLiquidationSummary: Resumen de liquidaciones
+- getLowStockProducts: Productos bajos
+- createOrder: Crear pedidos
+
 Reglas importantes:
-1. Responde de forma CONCISA (máximo 15 palabras cuando sea posible)
-2. Si necesitas información, usa las funciones disponibles
-3. Se directo y claro
-4. Usa español
-5. Si creas un pedido, confirma los detalles primero`
+1. Responde de forma CONCISA (máximo 15 palabras cuando sea posible, pero usa más si hay múltiples items)
+2. Si preguntan por DETALLES, ITEMS o PRODUCTOS de un pedido, SIEMPRE usa getOrderDetails
+3. Si necesitas información, usa las funciones disponibles
+4. Se directo y claro
+5. Usa español
+6. Si creas un pedido, confirma los detalles primero`
     };
 
     const completion = await openai.chat.completions.create({
@@ -173,6 +199,9 @@ Reglas importantes:
           break;
         case 'searchOrders':
           functionResult = searchOrders(functionArgs.query);
+          break;
+        case 'getOrderDetails':
+          functionResult = getOrderDetails(functionArgs.orderNumber);
           break;
         case 'getMessengerInfo':
           functionResult = getMessengerInfo(functionArgs.name);
