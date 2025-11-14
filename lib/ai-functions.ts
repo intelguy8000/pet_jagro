@@ -111,17 +111,9 @@ export function searchOrders(query: string): AIFunctionResult {
       numero: o.orderNumber,
       cliente: o.customer.name,
       estado: o.status,
-      items: o.items.map(item => ({
-        producto: item.product.name,
-        cantidad: item.quantity,
-        precio: item.product.price,
-        categoria: item.product.category,
-        stock: item.product.stock,
-        lote: item.product.batchNumber
-      })),
+      cantidadItems: o.items.length,
       total: o.totalValue,
-      zona: o.customer.zone,
-      direccion: o.customer.address
+      zona: o.customer.zone
     })),
     message: `${results.length} pedido(s) encontrado(s)`
   };
