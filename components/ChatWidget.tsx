@@ -5,6 +5,7 @@ import { AIChatMessage } from '@/types';
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [messages, setMessages] = useState<AIChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -95,7 +96,11 @@ export default function ChatWidget() {
       {/* Chat Window */}
       {isOpen && (
         <div
-          className="fixed bottom-24 right-6 z-50 w-96 h-[500px] rounded-lg shadow-2xl flex flex-col overflow-hidden transition-all duration-300"
+          className={`fixed bottom-24 right-6 z-50 rounded-lg shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ${
+            isExpanded
+              ? 'w-[600px] h-[700px]'
+              : 'w-96 h-[500px]'
+          }`}
           style={{
             backgroundColor: '#1f1f1f',
             border: '1px solid rgba(255, 255, 255, 0.1)'
@@ -113,13 +118,31 @@ export default function ChatWidget() {
               <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
               <h3 className="font-semibold text-white text-sm">Asistente J Agro</h3>
             </div>
-            <button
-              onClick={() => setMessages([])}
-              className="text-white hover:text-gray-200 text-xs px-2 py-1 rounded"
-              style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}
-            >
-              Limpiar
-            </button>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="text-white hover:text-gray-200 text-xs px-2 py-1 rounded"
+                style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}
+                title={isExpanded ? 'Contraer' : 'Expandir'}
+              >
+                {isExpanded ? (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                  </svg>
+                )}
+              </button>
+              <button
+                onClick={() => setMessages([])}
+                className="text-white hover:text-gray-200 text-xs px-2 py-1 rounded"
+                style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}
+              >
+                Limpiar
+              </button>
+            </div>
           </div>
 
           {/* Messages */}
@@ -142,7 +165,8 @@ export default function ChatWidget() {
                       : 'text-gray-100'
                   }`}
                   style={{
-                    backgroundColor: msg.role === 'user' ? '#C46849' : '#2d2d2d'
+                    backgroundColor: msg.role === 'user' ? '#C46849' : '#2d2d2d',
+                    whiteSpace: 'pre-wrap'
                   }}
                 >
                   {msg.content}
