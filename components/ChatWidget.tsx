@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { ChatMessage } from '@/types';
+import { AIChatMessage } from '@/types';
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<AIChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -21,7 +21,7 @@ export default function ChatWidget() {
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
-    const userMessage: ChatMessage = {
+    const userMessage: AIChatMessage = {
       id: Date.now().toString(),
       role: 'user',
       content: input,
@@ -41,7 +41,7 @@ export default function ChatWidget() {
 
       const data = await response.json();
 
-      const assistantMessage: ChatMessage = {
+      const assistantMessage: AIChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: data.message,
@@ -51,7 +51,7 @@ export default function ChatWidget() {
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Error:', error);
-      const errorMessage: ChatMessage = {
+      const errorMessage: AIChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: 'Error al procesar la solicitud',

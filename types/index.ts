@@ -197,7 +197,7 @@ export interface Delivery {
 
 // ========== CHAT AI ==========
 
-export interface ChatMessage {
+export interface AIChatMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;

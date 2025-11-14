@@ -387,7 +387,7 @@ El asistente puede:
 - Validaciones de datos
 
 **`types/index.ts`**
-- Interface ChatMessage agregada
+- Interface AIChatMessage agregada
 - Tipos: 'user' | 'assistant' | 'system'
 
 **`app/page.tsx`**
@@ -520,7 +520,7 @@ if (!session) return new Response('Unauthorized', { status: 401 });
 ```
 pet_jagro/
 ├── types/
-│   └── index.ts                    # Todos los tipos e interfaces + ChatMessage
+│   └── index.ts                    # Todos los tipos e interfaces + AIChatMessage
 ├── lib/
 │   ├── mockData.ts                 # Datos simulados + funciones helper
 │   └── ai-functions.ts             # Funciones ejecutables por AI (NUEVO)
