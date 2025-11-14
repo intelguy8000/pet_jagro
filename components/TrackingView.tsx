@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { mockProducts, mockPurchaseSuggestions } from '@/lib/mockData';
 import { Product, PurchaseSuggestion, categoryNames, Order } from '@/types';
 import { format } from 'date-fns';
@@ -16,6 +15,11 @@ export default function TrackingView({ orders }: TrackingViewProps) {
   const [suggestions] = useState<PurchaseSuggestion[]>(mockPurchaseSuggestions);
   const [filter, setFilter] = useState<'all' | 'low' | 'out'>('all');
 
+  // Filtros por columna
+  const [searchText, setSearchText] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-CO', {
       style: 'currency',
@@ -25,14 +29,47 @@ export default function TrackingView({ orders }: TrackingViewProps) {
   };
 
   const getFilteredProducts = () => {
+    let result = products;
+
+    // Aplicar filtro rápido (botones)
     switch (filter) {
       case 'low':
-        return products.filter(p => p.stock > 0 && p.stock <= p.minStock);
+        result = result.filter(p => p.stock > 0 && p.stock <= p.minStock);
+        break;
       case 'out':
-        return products.filter(p => p.stock === 0);
-      default:
-        return products;
+        result = result.filter(p => p.stock === 0);
+        break;
     }
+
+    // Aplicar búsqueda por texto
+    if (searchText.trim()) {
+      result = result.filter(p =>
+        p.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        p.barcode.includes(searchText)
+      );
+    }
+
+    // Aplicar filtro por categoría
+    if (categoryFilter !== 'all') {
+      result = result.filter(p => p.category === categoryFilter);
+    }
+
+    // Aplicar filtro por estado
+    if (statusFilter !== 'all') {
+      switch (statusFilter) {
+        case 'ok':
+          result = result.filter(p => p.stock > p.minStock);
+          break;
+        case 'bajo':
+          result = result.filter(p => p.stock > 0 && p.stock <= p.minStock);
+          break;
+        case 'agotado':
+          result = result.filter(p => p.stock === 0);
+          break;
+      }
+    }
+
+    return result;
   };
 
   const filteredProducts = getFilteredProducts();
@@ -175,10 +212,17 @@ export default function TrackingView({ orders }: TrackingViewProps) {
       {/* Inventario Completo */}
       <div className="rounded-xl p-3 sm:p-6" style={{ backgroundColor: '#252525' }}>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-          <h2 className="text-xl sm:text-2xl font-bold" style={{ color: '#f5f5f5', letterSpacing: '-0.5px' }}>Inventario Completo</h2>
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold" style={{ color: '#f5f5f5', letterSpacing: '-0.5px' }}>Inventario Completo</h2>
+            {filteredProducts.length !== products.length && (
+              <p className="text-xs mt-1" style={{ color: '#a0a0a0' }}>
+                Mostrando {filteredProducts.length} de {products.length} productos
+              </p>
+            )}
+          </div>
 
           {/* Filtros */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 items-center">
             <button
               onClick={() => setFilter('all')}
               className="px-3 sm:px-4 py-2 rounded-lg font-semibold transition-colors text-sm sm:text-base"
@@ -212,14 +256,27 @@ export default function TrackingView({ orders }: TrackingViewProps) {
             >
               Agotados
             </button>
+            {(searchText || categoryFilter !== 'all' || statusFilter !== 'all') && (
+              <button
+                onClick={() => {
+                  setSearchText('');
+                  setCategoryFilter('all');
+                  setStatusFilter('all');
+                }}
+                className="px-3 sm:px-4 py-2 rounded-lg font-semibold transition-colors text-sm sm:text-base"
+                style={{ backgroundColor: '#3a3a3a', color: '#d0d0d0' }}
+                title="Limpiar filtros de columnas"
+              >
+                🗑️ Limpiar
+              </button>
+            )}
           </div>
         </div>
 
         <div className="overflow-x-auto -mx-3 sm:mx-0">
           <table className="w-full min-w-[640px]">
-            <thead style={{ backgroundColor: '#2a2a2a', borderBottom: '1px solid #3a3a3a' }}>
-              <tr>
-                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold" style={{ color: '#f5f5f5' }}>Imagen</th>
+            <thead style={{ backgroundColor: '#2a2a2a' }}>
+              <tr style={{ borderBottom: '1px solid #3a3a3a' }}>
                 <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold" style={{ color: '#f5f5f5' }}>Producto</th>
                 <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold" style={{ color: '#f5f5f5' }}>Categoría</th>
                 <th className="px-2 sm:px-4 py-2 sm:py-3 text-center text-xs sm:text-sm font-semibold" style={{ color: '#f5f5f5' }}>Stock</th>
@@ -227,29 +284,77 @@ export default function TrackingView({ orders }: TrackingViewProps) {
                 <th className="px-2 sm:px-4 py-2 sm:py-3 text-right text-xs sm:text-sm font-semibold" style={{ color: '#f5f5f5' }}>Precio</th>
                 <th className="px-2 sm:px-4 py-2 sm:py-3 text-center text-xs sm:text-sm font-semibold" style={{ color: '#f5f5f5' }}>Estado</th>
               </tr>
+              {/* Fila de Filtros */}
+              <tr style={{ borderBottom: '2px solid #3a3a3a' }}>
+                <th className="px-2 sm:px-4 py-2">
+                  <input
+                    type="text"
+                    placeholder="Filtrar..."
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    className="w-full px-2 py-1 rounded text-xs"
+                    style={{
+                      backgroundColor: '#1a1a1a',
+                      border: '1px solid #3a3a3a',
+                      color: '#f5f5f5'
+                    }}
+                  />
+                </th>
+                <th className="px-2 sm:px-4 py-2">
+                  <select
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
+                    className="w-full px-2 py-1 rounded text-xs"
+                    style={{
+                      backgroundColor: '#1a1a1a',
+                      border: '1px solid #3a3a3a',
+                      color: '#f5f5f5'
+                    }}
+                  >
+                    <option value="all">Todas</option>
+                    {Array.from(new Set(products.map(p => p.category))).map(cat => (
+                      <option key={cat} value={cat}>{categoryNames[cat]}</option>
+                    ))}
+                  </select>
+                </th>
+                <th className="px-2 sm:px-4 py-2"></th>
+                <th className="px-2 sm:px-4 py-2"></th>
+                <th className="px-2 sm:px-4 py-2"></th>
+                <th className="px-2 sm:px-4 py-2">
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="w-full px-2 py-1 rounded text-xs"
+                    style={{
+                      backgroundColor: '#1a1a1a',
+                      border: '1px solid #3a3a3a',
+                      color: '#f5f5f5'
+                    }}
+                  >
+                    <option value="all">Todos</option>
+                    <option value="ok">OK</option>
+                    <option value="bajo">Bajo</option>
+                    <option value="agotado">Agotado</option>
+                  </select>
+                </th>
+              </tr>
             </thead>
             <tbody style={{ borderTop: '1px solid #3a3a3a' }}>
-              {filteredProducts.map((product) => (
+              {filteredProducts.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-4 py-8 text-center">
+                    <div style={{ color: '#a0a0a0' }}>
+                      <div className="text-2xl mb-2">📭</div>
+                      <div className="font-semibold">No se encontraron productos</div>
+                      <div className="text-sm mt-1">Intenta ajustar los filtros</div>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                filteredProducts.map((product) => (
                 <tr key={product.id} className="transition-colors" style={{ borderBottom: '1px solid #3a3a3a' }}
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2a2a2a'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                  <td className="px-2 sm:px-4 py-2 sm:py-3">
-                    {product.imageUrl ? (
-                      <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden" style={{ backgroundColor: '#2a2a2a' }}>
-                        <Image
-                          src={product.imageUrl}
-                          alt={product.name}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 640px) 48px, 64px"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#2a2a2a', color: '#707070' }}>
-                        <span className="text-xl sm:text-2xl">📦</span>
-                      </div>
-                    )}
-                  </td>
                   <td className="px-2 sm:px-4 py-2 sm:py-3">
                     <div className="font-medium text-xs sm:text-sm break-words" style={{ color: '#f5f5f5' }}>{product.name}</div>
                     <div className="text-[10px] sm:text-xs font-mono break-all" style={{ color: '#a0a0a0' }}>{product.barcode}</div>
@@ -288,7 +393,8 @@ export default function TrackingView({ orders }: TrackingViewProps) {
                     )}
                   </td>
                 </tr>
-              ))}
+                ))
+              )}
             </tbody>
           </table>
         </div>
