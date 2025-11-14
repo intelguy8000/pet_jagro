@@ -7,6 +7,7 @@ import TrackingView from '@/components/TrackingView';
 import FacturacionView from '@/components/FacturacionView';
 import LiquidacionesView from '@/components/LiquidacionesView';
 import IntegrationsView from '@/components/IntegrationsView';
+import ChatWidget from '@/components/ChatWidget';
 import { Order } from '@/types';
 import { mockOrders } from '@/lib/mockData';
 
@@ -202,6 +203,9 @@ export default function Home() {
           {activeTab === 'integrations' && <IntegrationsView />}
         </div>
       </main>
+
+      {/* AI Chat Widget */}
+      <ChatWidget />
     </div>
   );
 }

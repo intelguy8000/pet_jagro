@@ -194,3 +194,12 @@ export interface Delivery {
   collectedAmount?: number;
   notes?: string;
 }
+
+// ========== CHAT AI ==========
+
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: Date;
+}
