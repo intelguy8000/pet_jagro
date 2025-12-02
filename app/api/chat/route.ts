@@ -1,5 +1,5 @@
 import { createOpenAI } from '@ai-sdk/openai';
-import { streamText } from 'ai';
+import { streamText, convertToModelMessages } from 'ai';
 import { orders, products, deliveries } from '@/lib/mockData';
 
 const openai = createOpenAI({
@@ -10,6 +10,9 @@ export const maxDuration = 30;
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
+
+  // Convertir UIMessage[] a ModelMessage[]
+  const modelMessages = convertToModelMessages(messages);
 
   const systemPrompt = `Eres el Asistente J Agro, experto en picking y distribución de productos veterinarios.
 
@@ -36,7 +39,7 @@ REGLAS:
   const result = streamText({
     model: openai('gpt-4o'),
     system: systemPrompt,
-    messages,
+    messages: modelMessages,
   });
 
   return result.toUIMessageStreamResponse();
