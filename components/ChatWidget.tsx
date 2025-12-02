@@ -17,6 +17,7 @@ export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [input, setInput] = useState('');
+  const [feedbackGiven, setFeedbackGiven] = useState<Record<string, string>>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { messages, sendMessage, status, setMessages } = useChat({
@@ -66,6 +67,36 @@ export default function ChatWidget() {
         .join('');
     }
     return '';
+  };
+
+  // Find the previous user message for context
+  const getPreviousUserMessage = (index: number): string => {
+    for (let i = index - 1; i >= 0; i--) {
+      if (messages[i].role === 'user') {
+        return getMessageText(messages[i]);
+      }
+    }
+    return '';
+  };
+
+  // Send feedback to API
+  const sendFeedback = async (messageId: string, rating: 'up' | 'down', userMsg: string, assistantMsg: string) => {
+    setFeedbackGiven(prev => ({ ...prev, [messageId]: rating }));
+
+    try {
+      await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messageId,
+          userMessage: userMsg,
+          assistantResponse: assistantMsg,
+          rating
+        })
+      });
+    } catch (error) {
+      console.error('Error sending feedback:', error);
+    }
   };
 
   return (
@@ -132,7 +163,10 @@ export default function ChatWidget() {
                 )}
               </button>
               <button
-                onClick={() => setMessages([])}
+                onClick={() => {
+                  setMessages([]);
+                  setFeedbackGiven({});
+                }}
                 className="text-white hover:bg-white/20 text-xs px-2 py-1 rounded transition-colors"
               >
                 Limpiar
@@ -176,10 +210,10 @@ export default function ChatWidget() {
                 </div>
               </>
             )}
-            {messages.map((msg) => (
+            {messages.map((msg, index) => (
               <div
                 key={msg.id}
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
               >
                 <div
                   className={`max-w-[80%] px-3 py-2 rounded-lg text-sm ${
@@ -196,6 +230,62 @@ export default function ChatWidget() {
                 >
                   {getMessageText(msg)}
                 </div>
+
+                {/* Feedback buttons for assistant messages */}
+                {msg.role === 'assistant' && !isLoading && (
+                  <div className="flex items-center gap-1 mt-1 ml-1">
+                    {feedbackGiven[msg.id] ? (
+                      <span className="text-xs" style={{ color: '#22C55E' }}>
+                        ✓ ¡Gracias!
+                      </span>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => sendFeedback(
+                            msg.id,
+                            'up',
+                            getPreviousUserMessage(index),
+                            getMessageText(msg)
+                          )}
+                          className="p-1 rounded transition-all hover:scale-110"
+                          style={{ color: '#94A3B8' }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.color = '#22C55E';
+                            e.currentTarget.style.backgroundColor = '#F0FDF4';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.color = '#94A3B8';
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                          }}
+                          title="Buena respuesta"
+                        >
+                          👍
+                        </button>
+                        <button
+                          onClick={() => sendFeedback(
+                            msg.id,
+                            'down',
+                            getPreviousUserMessage(index),
+                            getMessageText(msg)
+                          )}
+                          className="p-1 rounded transition-all hover:scale-110"
+                          style={{ color: '#94A3B8' }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.color = '#EF4444';
+                            e.currentTarget.style.backgroundColor = '#FEF2F2';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.color = '#94A3B8';
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                          }}
+                          title="Mala respuesta"
+                        >
+                          👎
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
             {isLoading && (
