@@ -4,6 +4,15 @@ import { useState, useRef, useEffect } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 
+// Sugerencias de preguntas rápidas
+const suggestions = [
+  { icon: "📦", text: "¿Pedidos en proceso?" },
+  { icon: "⚠️", text: "¿Productos con stock bajo?" },
+  { icon: "💰", text: "Resumen de liquidaciones" },
+  { icon: "🚚", text: "¿Pedidos para zona Norte?" },
+  { icon: "🔍", text: "¿Qué tiene el pedido 2025-004?" }
+];
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -33,6 +42,11 @@ export default function ChatWidget() {
     const message = input;
     setInput('');
     await sendMessage({ text: message });
+  };
+
+  const handleSuggestionClick = async (text: string) => {
+    if (isLoading) return;
+    await sendMessage({ text });
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -129,10 +143,38 @@ export default function ChatWidget() {
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ backgroundColor: '#F8FAFC' }}>
             {messages.length === 0 && (
-              <div className="text-center text-sm mt-8" style={{ color: '#64748B' }}>
-                <p>Pregúntame sobre productos, pedidos,</p>
-                <p>mensajeros o inventario</p>
-              </div>
+              <>
+                <div className="text-center text-sm mt-4" style={{ color: '#64748B' }}>
+                  <p>Pregúntame sobre productos, pedidos,</p>
+                  <p>mensajeros o inventario</p>
+                </div>
+
+                {/* Quick Suggestion Chips */}
+                <div className="flex flex-wrap gap-2 justify-center mt-6 animate-fade-in">
+                  {suggestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSuggestionClick(suggestion.text)}
+                      disabled={isLoading}
+                      className="px-3 py-2 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105 disabled:opacity-50"
+                      style={{
+                        backgroundColor: '#E0F2FE',
+                        color: '#1E293B',
+                        border: '1px solid #BAE6FD'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#BAE6FD';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#E0F2FE';
+                      }}
+                    >
+                      <span className="mr-1">{suggestion.icon}</span>
+                      {suggestion.text}
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
             {messages.map((msg) => (
               <div
