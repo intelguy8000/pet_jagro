@@ -42,10 +42,25 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     await initTable();
     const sql = getDb();
+
+    const { searchParams } = new URL(req.url);
+    const type = searchParams.get('type');
+
+    if (type === 'stats') {
+      const result = await sql`
+        SELECT
+          COUNT(*) FILTER (WHERE rating = 'up') as upvotes,
+          COUNT(*) FILTER (WHERE rating = 'down') as downvotes,
+          COUNT(*) as total
+        FROM chat_feedback
+      `;
+      return NextResponse.json(result[0]);
+    }
+
     const feedback = await sql`SELECT * FROM chat_feedback ORDER BY created_at DESC LIMIT 50`;
     return NextResponse.json(feedback);
   } catch (error) {

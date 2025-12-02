@@ -18,6 +18,7 @@ export default function ChatWidget() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [input, setInput] = useState('');
   const [feedbackGiven, setFeedbackGiven] = useState<Record<string, string>>({});
+  const [stats, setStats] = useState<{ upvotes: number; downvotes: number; total: number } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { messages, sendMessage, status, setMessages } = useChat({
@@ -28,6 +29,11 @@ export default function ChatWidget() {
 
   const isLoading = status === 'streaming' || status === 'submitted';
 
+  // Calculate satisfaction rate
+  const satisfactionRate = stats && Number(stats.total) > 0
+    ? Math.round((Number(stats.upvotes) / Number(stats.total)) * 100)
+    : null;
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -35,6 +41,20 @@ export default function ChatWidget() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Load stats when component mounts or feedback is given
+  useEffect(() => {
+    fetch('/api/feedback?type=stats')
+      .then(res => res.json())
+      .then(data => {
+        if (data && !data.error) {
+          setStats(data);
+        }
+      })
+      .catch(() => {
+        // Silently fail - stats are not critical
+      });
+  }, [feedbackGiven]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -145,6 +165,18 @@ export default function ChatWidget() {
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#86EFAC' }}></div>
               <h3 className="font-semibold text-white text-sm">Asistente J Agro</h3>
+              {satisfactionRate !== null && (
+                <span
+                  className="text-xs ml-1 px-2 py-0.5 rounded-full"
+                  style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    color: '#FFFFFF'
+                  }}
+                  title={`Basado en ${stats?.total} valoraciones`}
+                >
+                  ✨ {satisfactionRate}% útil
+                </span>
+              )}
             </div>
             <div className="flex items-center space-x-2">
               <button
