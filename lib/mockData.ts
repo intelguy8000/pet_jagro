@@ -620,3 +620,33 @@ export const mockDeliveries: Delivery[] = [
     notes: 'Cliente solicitó crédito a 30 días'
   },
 ];
+
+// ========== EXPORTS SIMPLIFICADOS PARA API CHAT ==========
+
+// Pedidos simplificados para el contexto del AI
+export const orders = [
+  { id: 'PED-2025-004', cliente: 'Clínica Veterinaria AnimaVet', zona: 'Norte', estado: 'En proceso', monto: 1230000, fecha: '2025-12-02T23:09:00', items: 3, mensajero: 'Juan Pérez' },
+  { id: 'PED-2025-001', cliente: 'Veterinaria San Francisco', zona: 'Centro', estado: 'Pendiente', monto: 830000, fecha: '2025-12-02T00:09:00', items: 3 },
+  { id: 'PED-2025-002', cliente: 'Tienda Mascotas Felices', zona: 'Oriente', estado: 'Pendiente', monto: 599000, fecha: '2025-12-02T01:09:00', items: 3 },
+  { id: 'PED-2025-003', cliente: 'Pet Shop El Oasis', zona: 'Extramuros', estado: 'Pendiente', monto: 270000, fecha: '2025-12-02T01:39:00', items: 3 }
+];
+
+// Liquidaciones simplificadas para el contexto del AI
+export const deliveries = [
+  { pedidoId: 'PED-2025-001', cliente: 'Veterinaria San Francisco', zona: 'Centro', mensajero: 'Carlos Gómez', estado: 'Entregado', pago: 'Efectivo', monto: 830000 },
+  { pedidoId: 'PED-2025-002', cliente: 'Tienda Mascotas Felices', zona: 'Oriente', mensajero: 'Ana Martínez', estado: 'En Ruta', pago: null, monto: 599000 },
+  { pedidoId: 'PED-2025-003', cliente: 'Pet Shop El Oasis', zona: 'Extramuros', mensajero: 'Pedro López', estado: 'Devuelto', pago: 'Efectivo', monto: 270000 },
+  { pedidoId: 'PED-2025-004', cliente: 'Clínica Veterinaria AnimaVet', zona: 'Norte', mensajero: 'Juan Pérez', estado: 'Pendiente Pago', pago: 'Crédito', monto: 1230000 }
+];
+
+// Productos simplificados para el contexto del AI
+export const products = mockProducts.map(p => ({
+  id: p.id,
+  nombre: p.name,
+  categoria: p.category,
+  stock: p.stock,
+  stockMinimo: p.minStock,
+  precio: p.price,
+  proveedor: p.supplier,
+  codigoBarras: p.barcode
+}));
