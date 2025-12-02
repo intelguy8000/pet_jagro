@@ -1,16 +1,22 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useChat } from 'ai/react';
+import { useChat } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading, setMessages } = useChat({
-    api: '/api/chat',
+  const { messages, sendMessage, status, setMessages } = useChat({
+    transport: new DefaultChatTransport({
+      api: '/api/chat',
+    }),
   });
+
+  const isLoading = status === 'streaming' || status === 'submitted';
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -20,11 +26,32 @@ export default function ChatWidget() {
     scrollToBottom();
   }, [messages]);
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+
+    const message = input;
+    setInput('');
+    await sendMessage({ text: message });
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
+      handleSubmit(e);
     }
+  };
+
+  // Helper function to extract text content from message parts
+  const getMessageText = (msg: typeof messages[0]): string => {
+    // UIMessage v5 uses parts array
+    if (Array.isArray(msg.parts)) {
+      return msg.parts
+        .filter((part): part is { type: 'text'; text: string } => part.type === 'text')
+        .map(part => part.text)
+        .join('');
+    }
+    return '';
   };
 
   return (
@@ -125,7 +152,7 @@ export default function ChatWidget() {
                     whiteSpace: 'pre-wrap'
                   }}
                 >
-                  {msg.content}
+                  {getMessageText(msg)}
                 </div>
               </div>
             ))}
@@ -156,7 +183,7 @@ export default function ChatWidget() {
               <input
                 type="text"
                 value={input}
-                onChange={handleInputChange}
+                onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Escribe tu pregunta..."
                 className="flex-1 px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 transition-all"

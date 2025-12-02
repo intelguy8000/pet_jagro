@@ -39,5 +39,5 @@ REGLAS:
     messages,
   });
 
-  return result.toDataStreamResponse();
+  return result.toUIMessageStreamResponse();
 }
