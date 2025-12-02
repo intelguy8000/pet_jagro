@@ -8,12 +8,15 @@ Sistema de gestión de picking y distribución para productos veterinarios. Demo
 - TypeScript
 - Tailwind CSS
 - Vercel AI SDK v5 + OpenAI GPT-4o
+- Neon PostgreSQL (feedback)
 - Deploy: Vercel
 
 ## Archivos Clave
 - `app/api/chat/route.ts` → API del chat AI con OpenAI
+- `app/api/feedback/route.ts` → API de feedback (GET/POST)
 - `components/ChatWidget.tsx` → Widget de chat con useChat hook
 - `lib/mockData.ts` → Datos simulados (orders, products, deliveries)
+- `lib/db.ts` → Conexión lazy a Neon PostgreSQL
 - `app/globals.css` → Tema azul pastel
 
 ## Módulos
@@ -34,11 +37,47 @@ Sistema de gestión de picking y distribución para productos veterinarios. Demo
 - Recibe contexto de mockData (orders, products, deliveries)
 - Capacidades: búsqueda por ID parcial, cliente, zona, mensajero, stock bajo, liquidaciones
 
+### Quick Chips (Sugerencias)
+- Aparecen cuando el chat está vacío
+- 5 sugerencias predefinidas con iconos
+- Click envía la pregunta directamente
+- Definidas en array `suggestions` en ChatWidget.tsx
+
+### Feedback System
+- Botones 👍👎 debajo de cada respuesta del asistente
+- Se guarda en Neon PostgreSQL tabla `chat_feedback`
+- API `/api/feedback`:
+  - `POST`: guarda feedback (messageId, userMessage, assistantResponse, rating)
+  - `GET`: lista últimos 50 feedbacks
+  - `GET ?type=stats`: retorna {upvotes, downvotes, total}
+
+### Widget de Stats
+- Muestra "✨ X% útil" en el header del chat
+- Solo visible si hay al menos 1 feedback
+- Se actualiza al dar feedback
+- Tooltip muestra total de valoraciones
+
+## Base de Datos (Neon PostgreSQL)
+```sql
+CREATE TABLE chat_feedback (
+  id SERIAL PRIMARY KEY,
+  message_id TEXT NOT NULL,
+  user_message TEXT,
+  assistant_response TEXT,
+  rating TEXT CHECK (rating IN ('up', 'down')),
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+- Conexión lazy en `lib/db.ts` para evitar errores en build
+
 ## Variables de Entorno
 ```
 OPEN_AI_KEY=sk-proj-...
+DATABASE_URL=postgresql://...@...neon.tech/...
 ```
-**Nota:** La variable se llama `OPEN_AI_KEY` (con guión bajo), no `OPENAI_API_KEY`
+**Notas:**
+- `OPEN_AI_KEY` usa guión bajo, no `OPENAI_API_KEY`
+- `DATABASE_URL` es la connection string de Neon PostgreSQL
 
 ## Tema Visual
 - Primary: `#7CB9E8` (azul pastel)
@@ -55,13 +94,14 @@ OPEN_AI_KEY=sk-proj-...
 - Repo: https://github.com/intelguy8000/pet_jagro
 
 ## Notas
-- Datos son mock (no hay BD real)
-- Para más datos editar `lib/mockData.ts`
+- Datos de pedidos/productos/liquidaciones son mock (editar `lib/mockData.ts`)
+- Feedback sí usa BD real (Neon PostgreSQL)
 - System prompt está en `app/api/chat/route.ts`
 - AI SDK v5 requiere `@ai-sdk/react` separado para hooks de React
+- La tabla `chat_feedback` se crea automáticamente si no existe
 
 ## Pendientes Futuro
-- Base de datos real (Supabase)
+- Base de datos real para pedidos/productos (Supabase)
 - Autenticación usuarios
 - Socket.io tiempo real
 - CRUD desde chat
