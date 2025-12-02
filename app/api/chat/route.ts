@@ -1,6 +1,10 @@
-import { openai } from '@ai-sdk/openai';
+import { createOpenAI } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 import { orders, products, deliveries } from '@/lib/mockData';
+
+const openai = createOpenAI({
+  apiKey: process.env.OPEN_AI_KEY,
+});
 
 export const maxDuration = 30;
 
