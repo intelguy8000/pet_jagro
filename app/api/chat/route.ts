@@ -1,277 +1,39 @@
-import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
-import {
-  searchProducts,
-  getProductStock,
-  searchOrders,
-  getOrderDetails,
-  getMessengerInfo,
-  getLiquidationSummary,
-  createOrder,
-  getLowStockProducts
-} from '@/lib/ai-functions';
+import { openai } from '@ai-sdk/openai';
+import { streamText } from 'ai';
+import { orders, products, deliveries } from '@/lib/mockData';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPEN_AI_KEY
-});
+export const maxDuration = 30;
 
-// Definición de funciones disponibles para el AI
-const functions = [
-  {
-    name: 'searchProducts',
-    description: 'Buscar productos por nombre, categoría o código de barras',
-    parameters: {
-      type: 'object',
-      properties: {
-        query: {
-          type: 'string',
-          description: 'Texto a buscar en productos (nombre, categoría o código)'
-        }
-      },
-      required: ['query']
-    }
-  },
-  {
-    name: 'getProductStock',
-    description: 'Obtener el stock de un producto específico',
-    parameters: {
-      type: 'object',
-      properties: {
-        productName: {
-          type: 'string',
-          description: 'Nombre del producto'
-        }
-      },
-      required: ['productName']
-    }
-  },
-  {
-    name: 'searchOrders',
-    description: 'Buscar pedidos por cliente, estado o número de pedido',
-    parameters: {
-      type: 'object',
-      properties: {
-        query: {
-          type: 'string',
-          description: 'Texto a buscar (nombre de cliente, estado o número de pedido)'
-        }
-      },
-      required: ['query']
-    }
-  },
-  {
-    name: 'getOrderDetails',
-    description: 'Obtener todos los detalles completos de un pedido específico (items, precios, cliente, etc)',
-    parameters: {
-      type: 'object',
-      properties: {
-        orderNumber: {
-          type: 'string',
-          description: 'Número del pedido (ej: PED-2025-001)'
-        }
-      },
-      required: ['orderNumber']
-    }
-  },
-  {
-    name: 'getMessengerInfo',
-    description: 'Obtener información de un mensajero o listar todos',
-    parameters: {
-      type: 'object',
-      properties: {
-        name: {
-          type: 'string',
-          description: 'Nombre del mensajero (opcional, si no se provee lista todos)'
-        }
-      }
-    }
-  },
-  {
-    name: 'getLiquidationSummary',
-    description: 'Obtener resumen de liquidaciones y entregas',
-    parameters: {
-      type: 'object',
-      properties: {}
-    }
-  },
-  {
-    name: 'createOrder',
-    description: 'Crear un nuevo pedido (experimental)',
-    parameters: {
-      type: 'object',
-      properties: {
-        customerName: {
-          type: 'string',
-          description: 'Nombre del cliente'
-        },
-        products: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              name: {
-                type: 'string',
-                description: 'Nombre del producto'
-              },
-              quantity: {
-                type: 'number',
-                description: 'Cantidad a ordenar'
-              }
-            },
-            required: ['name', 'quantity']
-          },
-          description: 'Lista de productos con sus cantidades'
-        }
-      },
-      required: ['customerName', 'products']
-    }
-  },
-  {
-    name: 'getLowStockProducts',
-    description: 'Obtener lista de productos con stock bajo o agotados',
-    parameters: {
-      type: 'object',
-      properties: {}
-    }
-  }
-];
+export async function POST(req: Request) {
+  const { messages } = await req.json();
 
-export async function POST(req: NextRequest) {
-  try {
-    const { messages } = await req.json();
+  const systemPrompt = `Eres el Asistente J Agro, experto en picking y distribución de productos veterinarios.
 
-    // System message para configurar el comportamiento del AI
-    const systemMessage = {
-      role: 'system',
-      content: `Eres un asistente virtual para el sistema de picking de J Agro (tienda de mascotas).
+FECHA ACTUAL: ${new Date().toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
 
-Tu objetivo es ayudar con consultas sobre:
-- Productos e inventario
-- Pedidos y su estado (con todos los detalles: items, precios, lotes, etc)
-- Mensajeros y entregas
-- Liquidaciones y pagos
-- Crear pedidos nuevos
+=== PEDIDOS ===
+${JSON.stringify(orders, null, 2)}
 
-Funciones disponibles:
-- searchOrders: Para LISTAR pedidos, ver QUÉ pedidos hay, contar, filtrar por estado
-- getOrderDetails: SOLO para ver detalles completos cuando pidan "items", "productos", "qué contiene", "detalles de X pedido"
-- searchProducts: Buscar productos
-- getProductStock: Stock de un producto
-- getMessengerInfo: Info de mensajeros
-- getLiquidationSummary: Resumen de liquidaciones
-- getLowStockProducts: Productos bajos
-- createOrder: Crear pedidos
+=== INVENTARIO ===
+${JSON.stringify(products, null, 2)}
 
-Reglas importantes:
-1. Responde de forma CONCISA (máximo 15 palabras cuando sea posible)
-2. NO uses getOrderDetails si solo preguntan "qué pedidos hay", "cuántos hay", "hay pedidos X". Usa searchOrders
-3. USA getOrderDetails SOLO si piden explícitamente: "qué items/productos tiene", "qué contiene", "detalles del pedido X"
-4. Si necesitas información, usa las funciones disponibles
-5. Se directo y claro
-6. Usa español
-7. Si creas un pedido, confirma los detalles primero
+=== LIQUIDACIONES ===
+${JSON.stringify(deliveries, null, 2)}
 
-FORMATO DE RESPUESTAS:
-- Cuando listes múltiples items, usa SALTOS DE LÍNEA entre cada item
-- Usa formato de lista numerada o con viñetas
-- Separa información con saltos de línea para que sea fácil de leer
-- NO pegues todo el texto en un solo párrafo
+REGLAS:
+- IDs parciales: "2025-001" = "PED-2025-001"
+- "en proceso"/"en curso" = estado "En proceso" o "En Curso"
+- Interpreta "hoy", "ayer", fechas naturales
+- Búsqueda flexible en nombres (cliente, producto, mensajero)
+- Formato dinero colombiano: $1.230.000
+- Respuestas concisas con emojis (📦 🚚 ✅ ⚠️ 💰)
+- Si no encuentras algo, sugiere alternativas`;
 
-Ejemplo de formato BUENO:
-"El pedido incluye:
+  const result = streamText({
+    model: openai('gpt-4o'),
+    system: systemPrompt,
+    messages,
+  });
 
-1. Credelio Tabletas
-   - Cantidad: 5
-   - Precio: $95,000
-   - Subtotal: $475,000
-
-2. PETMED Baño Seco
-   - Cantidad: 3
-   - Precio: $35,000
-   - Subtotal: $105,000"
-
-Ejemplo de formato MALO:
-"El pedido incluye: 1. Credelio Tabletas - Cantidad: 5 - Precio: $95,000 2. PETMED Baño Seco - Cantidad: 3..."`
-    };
-
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [systemMessage, ...messages],
-      functions: functions,
-      function_call: 'auto',
-      temperature: 0.7,
-      max_tokens: 150
-    });
-
-    const responseMessage = completion.choices[0].message;
-
-    // Si el AI quiere ejecutar una función
-    if (responseMessage.function_call) {
-      const functionName = responseMessage.function_call.name;
-      const functionArgs = JSON.parse(responseMessage.function_call.arguments);
-
-      let functionResult;
-
-      // Ejecutar la función correspondiente
-      switch (functionName) {
-        case 'searchProducts':
-          functionResult = searchProducts(functionArgs.query);
-          break;
-        case 'getProductStock':
-          functionResult = getProductStock(functionArgs.productName);
-          break;
-        case 'searchOrders':
-          functionResult = searchOrders(functionArgs.query);
-          break;
-        case 'getOrderDetails':
-          functionResult = getOrderDetails(functionArgs.orderNumber);
-          break;
-        case 'getMessengerInfo':
-          functionResult = getMessengerInfo(functionArgs.name);
-          break;
-        case 'getLiquidationSummary':
-          functionResult = getLiquidationSummary();
-          break;
-        case 'createOrder':
-          functionResult = createOrder(functionArgs.customerName, functionArgs.products);
-          break;
-        case 'getLowStockProducts':
-          functionResult = getLowStockProducts();
-          break;
-        default:
-          functionResult = { success: false, message: 'Función no reconocida' };
-      }
-
-      // Enviar el resultado de la función al AI para que genere una respuesta
-      const secondCompletion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          systemMessage,
-          ...messages,
-          responseMessage,
-          {
-            role: 'function',
-            name: functionName,
-            content: JSON.stringify(functionResult)
-          }
-        ],
-        temperature: 0.7,
-        max_tokens: 150
-      });
-
-      const finalMessage = secondCompletion.choices[0].message.content;
-
-      return NextResponse.json({ message: finalMessage });
-    }
-
-    // Si no hay función, retornar la respuesta directa
-    return NextResponse.json({ message: responseMessage.content });
-
-  } catch (error) {
-    console.error('Error en API de chat:', error);
-    return NextResponse.json(
-      { error: 'Error al procesar la solicitud' },
-      { status: 500 }
-    );
-  }
+  return result.toDataStreamResponse();
 }
