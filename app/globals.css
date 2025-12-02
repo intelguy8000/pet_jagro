@@ -3,38 +3,42 @@
 @tailwind utilities;
 
 :root {
-  /* Claude Theme Colors */
-  --foreground-rgb: 245, 245, 245;
-  --background-start-rgb: 26, 26, 26;
-  --background-end-rgb: 45, 45, 45;
+  /* Light Blue Pastel Theme Colors */
+  --foreground-rgb: 30, 41, 59;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 248, 250, 252;
 
-  /* Brand Colors */
-  --primary: #C46849;
-  --primary-dark: #a54d32;
-  --primary-light: #d8826a;
+  /* Brand Colors - Blue Pastel */
+  --primary: #7CB9E8;
+  --primary-dark: #5B9BD5;
+  --primary-light: #B4D4E7;
 
-  /* Grays */
-  --gray-950: #1a1a1a;
-  --gray-900: #252525;
-  --gray-850: #2a2a2a;
-  --gray-800: #2d2d2d;
-  --gray-750: #353535;
-  --gray-600: #3a3a3a;
-  --gray-500: #707070;
-  --gray-400: #a0a0a0;
-  --gray-300: #b0b0b0;
-  --gray-200: #d0d0d0;
-  --gray-050: #f5f5f5;
+  /* Backgrounds */
+  --bg-white: #FFFFFF;
+  --bg-surface: #F8FAFC;
+  --bg-card-hover: #F1F5F9;
+
+  /* Text Colors */
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
+
+  /* Status Colors */
+  --success: #86EFAC;
+  --success-dark: #22C55E;
+  --warning: #FCD34D;
+  --warning-dark: #F59E0B;
+  --error: #FDA4AF;
+  --error-dark: #EF4444;
+
+  /* Borders */
+  --border: #E2E8F0;
+  --border-light: #F1F5F9;
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      135deg,
-      rgb(var(--background-start-rgb)) 0%,
-      rgb(var(--background-end-rgb)) 100%
-    );
+  background: #FFFFFF;
   min-height: 100vh;
 }
 
@@ -44,20 +48,39 @@ body {
   }
 }
 
-/* Custom scrollbar - Claude Theme */
+/* Custom scrollbar - Light Blue Theme */
 ::-webkit-scrollbar {
   width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--gray-900);
+  background: var(--bg-surface);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--gray-600);
+  background: var(--border);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
+}
+
+/* Select styling for light theme */
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748B'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Focus states */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(124, 185, 232, 0.2);
 }

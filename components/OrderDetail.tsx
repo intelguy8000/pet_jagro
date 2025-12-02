@@ -95,17 +95,23 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
       <div className="flex items-center justify-between">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all"
-          style={{ backgroundColor: '#252525', color: '#C46849' }}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2a2a2a'}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#252525'}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200"
+          style={{ backgroundColor: '#FFFFFF', color: '#7CB9E8', border: '1px solid #E2E8F0' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#F8FAFC';
+            e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.08)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#FFFFFF';
+            e.currentTarget.style.boxShadow = 'none';
+          }}
         >
           <span className="text-xl">←</span>
           <span className="font-semibold">Volver</span>
         </button>
 
         {order.status === 'completed' && (
-          <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{ backgroundColor: 'rgba(16, 185, 129, 0.2)', color: '#10b981' }}>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{ backgroundColor: 'rgba(34, 197, 94, 0.15)', color: '#22C55E' }}>
             <span>✅</span>
             <span className="font-semibold">Completado</span>
           </div>
@@ -117,18 +123,18 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
         {/* Columna Izquierda - Info Cliente */}
         <div className="lg:col-span-1 space-y-4">
           {/* Card Cliente */}
-          <div className="p-6 rounded-xl" style={{ backgroundColor: '#252525' }}>
-            <div className="text-xs uppercase tracking-wide mb-3" style={{ color: '#a0a0a0' }}>Pedido</div>
-            <div className="text-3xl font-bold mb-4" style={{ color: '#C46849', letterSpacing: '-1px' }}>
+          <div className="p-6 rounded-xl shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+            <div className="text-xs uppercase tracking-wide mb-3" style={{ color: '#64748B' }}>Pedido</div>
+            <div className="text-3xl font-bold mb-4" style={{ color: '#7CB9E8', letterSpacing: '-1px' }}>
               {order.orderNumber}
             </div>
 
-            <div className="text-xs uppercase tracking-wide mb-2" style={{ color: '#a0a0a0' }}>Cliente</div>
-            <div className="text-lg font-semibold mb-3" style={{ color: '#f5f5f5' }}>
+            <div className="text-xs uppercase tracking-wide mb-2" style={{ color: '#64748B' }}>Cliente</div>
+            <div className="text-lg font-semibold mb-3" style={{ color: '#1E293B' }}>
               {order.customer.name}
             </div>
 
-            <div className="space-y-2 text-sm" style={{ color: '#d0d0d0' }}>
+            <div className="space-y-2 text-sm" style={{ color: '#64748B' }}>
               <div className="flex items-start gap-2">
                 <span>📞</span>
                 <span>{order.customer.phone}</span>
@@ -141,9 +147,9 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
                     <div
                       className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
                       style={{
-                        backgroundColor: `${zoneColors[order.customer.zone]}20`,
+                        backgroundColor: `${zoneColors[order.customer.zone]}15`,
                         color: zoneColors[order.customer.zone],
-                        border: `1px solid ${zoneColors[order.customer.zone]}40`
+                        border: `1px solid ${zoneColors[order.customer.zone]}30`
                       }}
                     >
                       <span>🗺️</span>
@@ -154,10 +160,10 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
               </div>
             </div>
 
-            <div className="mt-6 pt-6" style={{ borderTop: '1px solid #3a3a3a' }}>
+            <div className="mt-6 pt-6" style={{ borderTop: '1px solid #E2E8F0' }}>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs uppercase" style={{ color: '#a0a0a0' }}>Total</span>
-                <span className="text-2xl font-bold" style={{ color: '#10b981' }}>
+                <span className="text-xs uppercase" style={{ color: '#64748B' }}>Total</span>
+                <span className="text-2xl font-bold" style={{ color: '#22C55E' }}>
                   {formatPrice(order.totalValue)}
                 </span>
               </div>
@@ -166,18 +172,18 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
 
           {/* Progreso */}
           {order.status !== 'pending' && (
-            <div className="p-6 rounded-xl" style={{ backgroundColor: '#252525' }}>
+            <div className="p-6 rounded-xl shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs uppercase tracking-wide" style={{ color: '#a0a0a0' }}>Progreso</span>
-                <span className="text-2xl font-bold" style={{ color: '#C46849' }}>{Math.round(progress)}%</span>
+                <span className="text-xs uppercase tracking-wide" style={{ color: '#64748B' }}>Progreso</span>
+                <span className="text-2xl font-bold" style={{ color: '#7CB9E8' }}>{Math.round(progress)}%</span>
               </div>
-              <div className="h-2 rounded-full" style={{ backgroundColor: '#3a3a3a' }}>
+              <div className="h-2 rounded-full" style={{ backgroundColor: '#E2E8F0' }}>
                 <div
                   className="h-2 rounded-full transition-all duration-500"
-                  style={{ backgroundColor: '#C46849', width: `${progress}%` }}
+                  style={{ backgroundColor: '#7CB9E8', width: `${progress}%` }}
                 />
               </div>
-              <div className="mt-3 text-xs" style={{ color: '#a0a0a0' }}>
+              <div className="mt-3 text-xs" style={{ color: '#64748B' }}>
                 {order.items.filter(i => i.scanned).length} de {order.items.length} items escaneados
               </div>
             </div>
@@ -187,10 +193,10 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
           {order.status === 'pending' && (
             <button
               onClick={handleAcceptOrder}
-              className="w-full py-4 rounded-xl font-bold text-white transition-all"
-              style={{ backgroundColor: '#C46849' }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a54d32'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#C46849'}
+              className="w-full py-4 rounded-xl font-bold text-white transition-all duration-200"
+              style={{ backgroundColor: '#7CB9E8' }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5B9BD5'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#7CB9E8'}
             >
               ✓ Aceptar y Comenzar
             </button>
@@ -199,10 +205,10 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
           {order.status === 'completed' && (
             <button
               onClick={handleSendToBilling}
-              className="w-full py-4 rounded-xl font-bold text-white transition-all"
-              style={{ backgroundColor: '#C46849' }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a54d32'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#C46849'}
+              className="w-full py-4 rounded-xl font-bold text-white transition-all duration-200"
+              style={{ backgroundColor: '#7CB9E8' }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5B9BD5'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#7CB9E8'}
             >
               💰 Pasar a Facturación
             </button>
@@ -211,8 +217,8 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
 
         {/* Columna Derecha - Tabla de Items */}
         <div className="lg:col-span-2">
-          <div className="p-6 rounded-xl" style={{ backgroundColor: '#252525' }}>
-            <h3 className="text-xl font-bold mb-4" style={{ color: '#f5f5f5', letterSpacing: '-0.5px' }}>
+          <div className="p-6 rounded-xl shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+            <h3 className="text-xl font-bold mb-4" style={{ color: '#1E293B', letterSpacing: '-0.5px' }}>
               Items del Pedido
             </h3>
 
@@ -221,31 +227,31 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
               {order.items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center gap-4 p-4 rounded-lg transition-all"
+                  className="flex items-center gap-4 p-4 rounded-lg transition-all duration-200"
                   style={{
-                    backgroundColor: item.scanned ? 'rgba(16, 185, 129, 0.1)' : '#2a2a2a',
-                    border: item.scanned ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid #3a3a3a'
+                    backgroundColor: item.scanned ? 'rgba(34, 197, 94, 0.08)' : '#F8FAFC',
+                    border: item.scanned ? '1px solid rgba(34, 197, 94, 0.2)' : '1px solid #E2E8F0'
                   }}
                 >
                   {/* Status Icon */}
                   <div className="flex-shrink-0">
                     {item.scanned ? (
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: '#10b981' }}>
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: '#22C55E' }}>
                         <span className="text-white text-lg">✓</span>
                       </div>
                     ) : (
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: '#3a3a3a', border: '2px dashed #707070' }}>
-                        <span style={{ color: '#707070' }}>□</span>
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: '#F1F5F9', border: '2px dashed #94A3B8' }}>
+                        <span style={{ color: '#94A3B8' }}>□</span>
                       </div>
                     )}
                   </div>
 
                   {/* Info Producto */}
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold mb-1" style={{ color: '#f5f5f5' }}>
+                    <div className="font-semibold mb-1" style={{ color: '#1E293B' }}>
                       {item.product.name}
                     </div>
-                    <div className="flex items-center gap-3 text-xs" style={{ color: '#a0a0a0' }}>
+                    <div className="flex items-center gap-3 text-xs" style={{ color: '#64748B' }}>
                       <span>{categoryNames[item.product.category]}</span>
                       <span>•</span>
                       <span className="font-mono">{item.product.barcode}</span>
@@ -262,8 +268,8 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
 
                   {/* Cantidad */}
                   <div className="flex-shrink-0 text-center">
-                    <div className="text-sm" style={{ color: '#a0a0a0' }}>Cantidad</div>
-                    <div className="text-xl font-bold" style={{ color: item.scanned ? '#10b981' : '#C46849' }}>
+                    <div className="text-sm" style={{ color: '#64748B' }}>Cantidad</div>
+                    <div className="text-xl font-bold" style={{ color: item.scanned ? '#22C55E' : '#7CB9E8' }}>
                       {item.scannedQuantity}/{item.quantity}
                     </div>
                   </div>
@@ -272,10 +278,10 @@ export default function OrderDetail({ order: initialOrder, onBack, onUpdate }: O
                   {order.status === 'in_progress' && !item.scanned && (
                     <button
                       onClick={() => handleStartScanning(item)}
-                      className="flex-shrink-0 px-6 py-3 rounded-lg font-semibold text-white transition-all"
-                      style={{ backgroundColor: '#C46849' }}
-                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#a54d32'}
-                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#C46849'}
+                      className="flex-shrink-0 px-6 py-3 rounded-lg font-semibold text-white transition-all duration-200"
+                      style={{ backgroundColor: '#7CB9E8' }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5B9BD5'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#7CB9E8'}
                     >
                       📷 Escanear
                     </button>

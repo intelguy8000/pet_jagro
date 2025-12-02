@@ -130,13 +130,13 @@ export default function IntegrationsView() {
   const getStatusStyle = (status: IntegrationStatus) => {
     switch (status) {
       case 'connected':
-        return { backgroundColor: 'rgba(16, 185, 129, 0.2)', color: '#10b981' };
+        return { backgroundColor: 'rgba(34, 197, 94, 0.15)', color: '#22C55E' };
       case 'syncing':
-        return { backgroundColor: 'rgba(196, 104, 73, 0.2)', color: '#C46849' };
+        return { backgroundColor: 'rgba(124, 185, 232, 0.15)', color: '#7CB9E8' };
       case 'error':
-        return { backgroundColor: 'rgba(239, 68, 68, 0.2)', color: '#ef4444' };
+        return { backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' };
       case 'disconnected':
-        return { backgroundColor: '#3a3a3a', color: '#a0a0a0' };
+        return { backgroundColor: '#E2E8F0', color: '#64748B' };
     }
   };
 
@@ -234,29 +234,29 @@ export default function IntegrationsView() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="rounded-xl p-6" style={{ backgroundColor: '#252525' }}>
+      <div className="rounded-xl p-6 shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-2xl font-bold" style={{ color: '#f5f5f5', letterSpacing: '-0.5px' }}>Integraciones HGI</h2>
-            <p className="mt-1" style={{ color: '#a0a0a0' }}>
+            <h2 className="text-2xl font-bold" style={{ color: '#1E293B', letterSpacing: '-0.5px' }}>Integraciones HGI</h2>
+            <p className="mt-1" style={{ color: '#64748B' }}>
               Conecta J Agro con el sistema HGI para sincronizar facturación, inventarios y más
             </p>
           </div>
           <div className="text-right">
-            <div className="text-sm" style={{ color: '#a0a0a0' }}>Estado General</div>
-            <div className="text-2xl font-bold" style={{ color: '#10b981' }}>
+            <div className="text-sm" style={{ color: '#64748B' }}>Estado General</div>
+            <div className="text-2xl font-bold" style={{ color: '#22C55E' }}>
               {modules.filter(m => m.status === 'connected').length}/{modules.length}
             </div>
-            <div className="text-xs" style={{ color: '#a0a0a0' }}>módulos activos</div>
+            <div className="text-xs" style={{ color: '#64748B' }}>módulos activos</div>
           </div>
         </div>
 
         {/* API Configuration */}
-        <div className="pt-4 mt-4" style={{ borderTop: '1px solid #3a3a3a' }}>
-          <h3 className="font-semibold mb-3" style={{ color: '#f5f5f5' }}>Configuración de API</h3>
+        <div className="pt-4 mt-4" style={{ borderTop: '1px solid #E2E8F0' }}>
+          <h3 className="font-semibold mb-3" style={{ color: '#1E293B' }}>Configuración de API</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: '#d0d0d0' }}>
+              <label className="block text-sm font-medium mb-2" style={{ color: '#64748B' }}>
                 API Key de HGI
               </label>
               <div className="flex items-center space-x-2">
@@ -265,21 +265,21 @@ export default function IntegrationsView() {
                   value={apiKey}
                   readOnly
                   className="flex-1 px-3 py-2 rounded-lg font-mono text-sm"
-                  style={{ border: '1px solid #3a3a3a', backgroundColor: '#2a2a2a', color: '#f5f5f5' }}
+                  style={{ border: '1px solid #E2E8F0', backgroundColor: '#F8FAFC', color: '#1E293B' }}
                 />
                 <button
                   onClick={() => setShowApiKey(!showApiKey)}
-                  className="px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
-                  style={{ backgroundColor: '#3a3a3a', color: '#d0d0d0' }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#505050'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3a3a3a'}
+                  className="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200"
+                  style={{ backgroundColor: '#F1F5F9', color: '#64748B', border: '1px solid #E2E8F0' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#E2E8F0'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#F1F5F9'}
                 >
                   {showApiKey ? '🔒' : '👁️'}
                 </button>
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: '#d0d0d0' }}>
+              <label className="block text-sm font-medium mb-2" style={{ color: '#64748B' }}>
                 URL Base
               </label>
               <input
@@ -287,7 +287,7 @@ export default function IntegrationsView() {
                 value="https://api.hgi.com.co/v1"
                 readOnly
                 className="w-full px-3 py-2 rounded-lg text-sm"
-                style={{ border: '1px solid #3a3a3a', backgroundColor: '#2a2a2a', color: '#f5f5f5' }}
+                style={{ border: '1px solid #E2E8F0', backgroundColor: '#F8FAFC', color: '#1E293B' }}
               />
             </div>
           </div>
@@ -295,19 +295,21 @@ export default function IntegrationsView() {
       </div>
 
       {/* Módulos de Integración */}
-      <div className="rounded-xl p-6" style={{ backgroundColor: '#252525' }}>
-        <h3 className="text-xl font-bold mb-4" style={{ color: '#f5f5f5', letterSpacing: '-0.5px' }}>Módulos Disponibles</h3>
+      <div className="rounded-xl p-6 shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+        <h3 className="text-xl font-bold mb-4" style={{ color: '#1E293B', letterSpacing: '-0.5px' }}>Módulos Disponibles</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {modules.map((module) => (
             <div
               key={module.id}
-              className="rounded-lg p-4"
-              style={{ backgroundColor: '#2a2a2a', border: '1px solid #3a3a3a' }}
+              className="rounded-lg p-4 transition-all duration-200"
+              style={{ backgroundColor: '#F8FAFC', border: '1px solid #E2E8F0' }}
+              onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)'}
+              onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
-                  <h4 className="font-bold text-lg" style={{ color: '#f5f5f5' }}>{module.name}</h4>
-                  <p className="text-sm" style={{ color: '#a0a0a0' }}>{module.description}</p>
+                  <h4 className="font-bold text-lg" style={{ color: '#1E293B' }}>{module.name}</h4>
+                  <p className="text-sm" style={{ color: '#64748B' }}>{module.description}</p>
                 </div>
                 <span className="px-3 py-1 rounded-full text-xs font-semibold" style={getStatusStyle(module.status)}>
                   {getStatusIcon(module.status)} {getStatusText(module.status)}
@@ -315,22 +317,22 @@ export default function IntegrationsView() {
               </div>
 
               {module.errorMessage && (
-                <div className="mb-3 p-2 rounded text-sm" style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#ef4444' }}>
+                <div className="mb-3 p-2 rounded text-sm" style={{ backgroundColor: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.2)', color: '#EF4444' }}>
                   ⚠️ {module.errorMessage}
                 </div>
               )}
 
-              <div className="text-xs mb-3 font-mono" style={{ color: '#a0a0a0' }}>
+              <div className="text-xs mb-3 font-mono" style={{ color: '#64748B' }}>
                 {module.endpoint}
               </div>
 
               <div className="flex items-center justify-between text-sm mb-3">
-                <div style={{ color: '#d0d0d0' }}>
+                <div style={{ color: '#64748B' }}>
                   <span className="font-semibold">Última sincronización:</span>{' '}
                   {module.lastSync ? formatRelativeTime(module.lastSync) : 'Nunca'}
                 </div>
                 {module.syncCount !== undefined && (
-                  <div style={{ color: '#a0a0a0' }}>
+                  <div style={{ color: '#64748B' }}>
                     {module.syncCount.toLocaleString()} registros
                   </div>
                 )}
@@ -339,30 +341,30 @@ export default function IntegrationsView() {
               <div className="flex space-x-2">
                 <button
                   onClick={() => handleToggleModule(module.id)}
-                  className="flex-1 px-4 py-2 rounded-lg font-semibold text-sm text-white transition-colors"
-                  style={{ backgroundColor: module.enabled ? '#ef4444' : '#10b981' }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = module.enabled ? '#dc2626' : '#059669'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = module.enabled ? '#ef4444' : '#10b981'}
+                  className="flex-1 px-4 py-2 rounded-lg font-semibold text-sm text-white transition-all duration-200"
+                  style={{ backgroundColor: module.enabled ? '#EF4444' : '#22C55E' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = module.enabled ? '#DC2626' : '#16A34A'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = module.enabled ? '#EF4444' : '#22C55E'}
                 >
                   {module.enabled ? 'Desconectar' : 'Conectar'}
                 </button>
                 <button
                   onClick={() => handleSyncModule(module.id)}
                   disabled={!module.enabled || module.status === 'syncing'}
-                  className="flex-1 px-4 py-2 rounded-lg font-semibold text-sm transition-colors"
+                  className="flex-1 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200"
                   style={
                     module.enabled && module.status !== 'syncing'
-                      ? { backgroundColor: '#C46849', color: '#ffffff' }
-                      : { backgroundColor: '#3a3a3a', color: '#707070', cursor: 'not-allowed' }
+                      ? { backgroundColor: '#7CB9E8', color: '#ffffff' }
+                      : { backgroundColor: '#E2E8F0', color: '#94A3B8', cursor: 'not-allowed' }
                   }
                   onMouseEnter={(e) => {
                     if (module.enabled && module.status !== 'syncing') {
-                      e.currentTarget.style.backgroundColor = '#a54d32';
+                      e.currentTarget.style.backgroundColor = '#5B9BD5';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (module.enabled && module.status !== 'syncing') {
-                      e.currentTarget.style.backgroundColor = '#C46849';
+                      e.currentTarget.style.backgroundColor = '#7CB9E8';
                     }
                   }}
                 >
@@ -375,37 +377,37 @@ export default function IntegrationsView() {
       </div>
 
       {/* Registro de Actividad */}
-      <div className="rounded-xl p-6" style={{ backgroundColor: '#252525' }}>
-        <h3 className="text-xl font-bold mb-4" style={{ color: '#f5f5f5', letterSpacing: '-0.5px' }}>Registro de Actividad</h3>
+      <div className="rounded-xl p-6 shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+        <h3 className="text-xl font-bold mb-4" style={{ color: '#1E293B', letterSpacing: '-0.5px' }}>Registro de Actividad</h3>
         <div className="space-y-2">
           {logs.map((log) => (
             <div
               key={log.id}
               className="p-3 rounded-lg"
               style={{
-                borderLeft: log.status === 'success' ? '4px solid #10b981' : '4px solid #ef4444',
-                backgroundColor: log.status === 'success' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)'
+                borderLeft: log.status === 'success' ? '4px solid #22C55E' : '4px solid #EF4444',
+                backgroundColor: log.status === 'success' ? 'rgba(34, 197, 94, 0.08)' : 'rgba(239, 68, 68, 0.08)'
               }}
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="flex items-center space-x-2">
-                    <span className="font-semibold" style={{ color: '#f5f5f5' }}>{log.module}</span>
-                    <span className="text-xs" style={{ color: '#a0a0a0' }}>
+                    <span className="font-semibold" style={{ color: '#1E293B' }}>{log.module}</span>
+                    <span className="text-xs" style={{ color: '#64748B' }}>
                       {log.timestamp.toLocaleTimeString('es-CO', {
                         hour: '2-digit',
                         minute: '2-digit',
                       })}
                     </span>
                   </div>
-                  <div className="text-sm" style={{ color: '#d0d0d0' }}>{log.message}</div>
+                  <div className="text-sm" style={{ color: '#64748B' }}>{log.message}</div>
                   {log.recordsProcessed && (
-                    <div className="text-xs mt-1" style={{ color: '#a0a0a0' }}>
+                    <div className="text-xs mt-1" style={{ color: '#64748B' }}>
                       {log.recordsProcessed} registros procesados
                     </div>
                   )}
                 </div>
-                <div className="text-2xl" style={{ color: log.status === 'success' ? '#10b981' : '#ef4444' }}>
+                <div className="text-2xl" style={{ color: log.status === 'success' ? '#22C55E' : '#EF4444' }}>
                   {log.status === 'success' ? '✓' : '✕'}
                 </div>
               </div>

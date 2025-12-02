@@ -78,8 +78,8 @@ export default function ChatWidget() {
         onClick={() => setIsOpen(!isOpen)}
         className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110"
         style={{
-          backgroundColor: '#C46849',
-          boxShadow: '0 4px 12px rgba(196, 104, 73, 0.4)'
+          backgroundColor: '#7CB9E8',
+          boxShadow: '0 4px 20px rgba(124, 185, 232, 0.4)'
         }}
       >
         {isOpen ? (
@@ -96,33 +96,32 @@ export default function ChatWidget() {
       {/* Chat Window */}
       {isOpen && (
         <div
-          className={`fixed bottom-24 right-6 z-50 rounded-lg shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ${
+          className={`fixed bottom-24 right-6 z-50 rounded-xl shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ${
             isExpanded
               ? 'w-[460px] h-[600px]'
               : 'w-96 h-[500px]'
           }`}
           style={{
-            backgroundColor: '#1f1f1f',
-            border: '1px solid rgba(255, 255, 255, 0.1)'
+            backgroundColor: '#FFFFFF',
+            border: '1px solid #E2E8F0'
           }}
         >
           {/* Header */}
           <div
             className="px-4 py-3 border-b flex items-center justify-between"
             style={{
-              backgroundColor: '#C46849',
-              borderColor: 'rgba(255, 255, 255, 0.1)'
+              background: 'linear-gradient(135deg, #7CB9E8 0%, #5B9BD5 100%)',
+              borderColor: '#E2E8F0'
             }}
           >
             <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+              <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#86EFAC' }}></div>
               <h3 className="font-semibold text-white text-sm">Asistente J Agro</h3>
             </div>
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="text-white hover:text-gray-200 text-xs px-2 py-1 rounded"
-                style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}
+                className="text-white hover:bg-white/20 text-xs px-2 py-1 rounded transition-colors"
                 title={isExpanded ? 'Contraer' : 'Expandir'}
               >
                 {isExpanded ? (
@@ -137,8 +136,7 @@ export default function ChatWidget() {
               </button>
               <button
                 onClick={() => setMessages([])}
-                className="text-white hover:text-gray-200 text-xs px-2 py-1 rounded"
-                style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}
+                className="text-white hover:bg-white/20 text-xs px-2 py-1 rounded transition-colors"
               >
                 Limpiar
               </button>
@@ -146,9 +144,9 @@ export default function ChatWidget() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ backgroundColor: '#F8FAFC' }}>
             {messages.length === 0 && (
-              <div className="text-center text-gray-400 text-sm mt-8">
+              <div className="text-center text-sm mt-8" style={{ color: '#64748B' }}>
                 <p>Pregúntame sobre productos, pedidos,</p>
                 <p>mensajeros o inventario</p>
               </div>
@@ -162,10 +160,12 @@ export default function ChatWidget() {
                   className={`max-w-[80%] px-3 py-2 rounded-lg text-sm ${
                     msg.role === 'user'
                       ? 'text-white'
-                      : 'text-gray-100'
+                      : ''
                   }`}
                   style={{
-                    backgroundColor: msg.role === 'user' ? '#C46849' : '#2d2d2d',
+                    backgroundColor: msg.role === 'user' ? '#7CB9E8' : '#FFFFFF',
+                    color: msg.role === 'user' ? '#FFFFFF' : '#1E293B',
+                    border: msg.role === 'user' ? 'none' : '1px solid #E2E8F0',
                     whiteSpace: 'pre-wrap'
                   }}
                 >
@@ -176,13 +176,13 @@ export default function ChatWidget() {
             {isLoading && (
               <div className="flex justify-start">
                 <div
-                  className="px-3 py-2 rounded-lg text-sm text-gray-100"
-                  style={{ backgroundColor: '#2d2d2d' }}
+                  className="px-3 py-2 rounded-lg text-sm"
+                  style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}
                 >
                   <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: '#7CB9E8' }}></div>
+                    <div className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: '#7CB9E8', animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: '#7CB9E8', animationDelay: '0.2s' }}></div>
                   </div>
                 </div>
               </div>
@@ -193,7 +193,7 @@ export default function ChatWidget() {
           {/* Input */}
           <div
             className="p-3 border-t"
-            style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+            style={{ borderColor: '#E2E8F0', backgroundColor: '#FFFFFF' }}
           >
             <div className="flex space-x-2">
               <input
@@ -202,19 +202,27 @@ export default function ChatWidget() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Escribe tu pregunta..."
-                className="flex-1 px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+                className="flex-1 px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 transition-all"
                 style={{
-                  backgroundColor: '#2d2d2d',
-                  color: '#f5f5f5',
-                  border: '1px solid rgba(255, 255, 255, 0.1)'
+                  backgroundColor: '#F8FAFC',
+                  color: '#1E293B',
+                  border: '1px solid #E2E8F0'
                 }}
                 disabled={isLoading}
               />
               <button
                 onClick={handleSend}
                 disabled={!input.trim() || isLoading}
-                className="px-4 py-2 rounded-lg text-white text-sm font-medium transition-opacity disabled:opacity-50"
-                style={{ backgroundColor: '#C46849' }}
+                className="px-4 py-2 rounded-lg text-white text-sm font-medium transition-all duration-200 disabled:opacity-50"
+                style={{ backgroundColor: '#7CB9E8' }}
+                onMouseEnter={(e) => {
+                  if (!e.currentTarget.disabled) {
+                    e.currentTarget.style.backgroundColor = '#5B9BD5';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#7CB9E8';
+                }}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

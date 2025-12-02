@@ -42,11 +42,11 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen" style={{ background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)' }}>
+    <div className="flex min-h-screen" style={{ background: '#FFFFFF' }}>
       {/* Mobile Overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-30 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -62,25 +62,27 @@ export default function Home() {
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
         style={{
-          backgroundColor: '#1f1f1f',
-          borderColor: 'rgba(255, 255, 255, 0.1)'
+          background: 'linear-gradient(180deg, #7CB9E8 0%, #5B9BD5 100%)',
+          borderColor: '#E2E8F0'
         }}
       >
         {/* Logo Section */}
-        <div className="p-6 border-b" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+        <div className="p-6 border-b" style={{ borderColor: 'rgba(255, 255, 255, 0.2)' }}>
           <div className="flex items-center space-x-3">
-            <Image
-              src="/jotagro-logo.png"
-              alt="J Agro"
-              width={50}
-              height={33}
-              className="object-contain"
-            />
+            <div className="bg-white rounded-lg p-1.5 shadow-sm">
+              <Image
+                src="/jotagro-logo.png"
+                alt="J Agro"
+                width={50}
+                height={33}
+                className="object-contain"
+              />
+            </div>
             <div>
-              <h1 className="text-sm font-bold" style={{ color: '#C46849', letterSpacing: '-0.3px' }}>
+              <h1 className="text-sm font-bold text-white" style={{ letterSpacing: '-0.3px' }}>
                 J AGRO
               </h1>
-              <p className="text-xs" style={{ color: '#808080' }}>
+              <p className="text-xs" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
                 Sistema de Picking
               </p>
             </div>
@@ -97,17 +99,18 @@ export default function Home() {
               style={
                 activeTab === item.id
                   ? {
-                      backgroundColor: '#C46849',
-                      color: '#ffffff',
+                      backgroundColor: '#FFFFFF',
+                      color: '#5B9BD5',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
                     }
                   : {
                       backgroundColor: 'transparent',
-                      color: '#a0a0a0',
+                      color: 'rgba(255, 255, 255, 0.9)',
                     }
               }
               onMouseEnter={(e) => {
                 if (activeTab !== item.id) {
-                  e.currentTarget.style.backgroundColor = 'rgba(196, 104, 73, 0.15)';
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
                 }
               }}
               onMouseLeave={(e) => {
@@ -125,25 +128,25 @@ export default function Home() {
         {/* User Section at Bottom */}
         <div
           className="p-4 border-t"
-          style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+          style={{ borderColor: 'rgba(255, 255, 255, 0.2)' }}
         >
           <div className="flex items-center space-x-3 px-2">
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm"
+              className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shadow-sm"
               style={{
-                backgroundColor: '#C46849',
-                color: '#ffffff'
+                backgroundColor: '#FFFFFF',
+                color: '#5B9BD5'
               }}
             >
               DC
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium" style={{ color: '#f5f5f5' }}>
+              <p className="text-sm font-medium text-white">
                 Administrador
               </p>
               <div className="flex items-center space-x-1.5 mt-0.5">
-                <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: '#10b981' }}></div>
-                <span className="text-xs" style={{ color: '#808080' }}>Conectado</span>
+                <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: '#86EFAC' }}></div>
+                <span className="text-xs" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>Conectado</span>
               </div>
             </div>
           </div>
@@ -151,19 +154,19 @@ export default function Home() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-auto flex flex-col">
+      <main className="flex-1 overflow-auto flex flex-col" style={{ backgroundColor: '#F8FAFC' }}>
         {/* Mobile Header with Hamburger */}
         <div
           className="lg:hidden flex items-center justify-between px-4 py-3 border-b sticky top-0 z-30"
           style={{
-            backgroundColor: '#252525',
-            borderColor: 'rgba(255, 255, 255, 0.1)'
+            backgroundColor: '#FFFFFF',
+            borderColor: '#E2E8F0'
           }}
         >
           <button
             onClick={() => setSidebarOpen(true)}
             className="p-2 rounded-lg transition-colors"
-            style={{ color: '#C46849' }}
+            style={{ color: '#7CB9E8' }}
           >
             <svg
               className="w-6 h-6"
@@ -187,7 +190,7 @@ export default function Home() {
               height={26}
               className="object-contain"
             />
-            <h1 className="text-sm font-bold" style={{ color: '#C46849' }}>
+            <h1 className="text-sm font-bold" style={{ color: '#7CB9E8' }}>
               J AGRO
             </h1>
           </div>

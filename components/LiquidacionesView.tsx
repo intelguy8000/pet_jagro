@@ -122,10 +122,10 @@ export default function LiquidacionesView() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold mb-2" style={{ color: '#f5f5f5', letterSpacing: '-0.5px' }}>
+        <h1 className="text-2xl font-bold mb-2" style={{ color: '#1E293B', letterSpacing: '-0.5px' }}>
           Liquidaciones
         </h1>
-        <p className="text-sm" style={{ color: '#a0a0a0' }}>
+        <p className="text-sm" style={{ color: '#64748B' }}>
           Gestión de entregas y pagos por mensajero
         </p>
       </div>
@@ -134,14 +134,14 @@ export default function LiquidacionesView() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Filtro Mensajero */}
         <div>
-          <label className="block text-xs font-semibold mb-2" style={{ color: '#a0a0a0' }}>
+          <label className="block text-xs font-semibold mb-2" style={{ color: '#64748B' }}>
             Mensajero
           </label>
           <select
             value={selectedMessenger}
             onChange={(e) => setSelectedMessenger(e.target.value)}
             className="w-full px-4 py-2 rounded-lg text-sm font-semibold transition-all"
-            style={{ backgroundColor: '#252525', color: '#f5f5f5', border: '1px solid #3a3a3a' }}
+            style={{ backgroundColor: '#FFFFFF', color: '#1E293B', border: '1px solid #E2E8F0' }}
           >
             <option value="all">Todos los mensajeros</option>
             {mockMessengers.map(messenger => (
@@ -154,14 +154,14 @@ export default function LiquidacionesView() {
 
         {/* Filtro Zona */}
         <div>
-          <label className="block text-xs font-semibold mb-2" style={{ color: '#a0a0a0' }}>
+          <label className="block text-xs font-semibold mb-2" style={{ color: '#64748B' }}>
             Zona
           </label>
           <select
             value={selectedZone}
             onChange={(e) => setSelectedZone(e.target.value as DeliveryZone | 'all')}
             className="w-full px-4 py-2 rounded-lg text-sm font-semibold transition-all"
-            style={{ backgroundColor: '#252525', color: '#f5f5f5', border: '1px solid #3a3a3a' }}
+            style={{ backgroundColor: '#FFFFFF', color: '#1E293B', border: '1px solid #E2E8F0' }}
           >
             <option value="all">Todas las zonas</option>
             <option value="norte">Norte</option>
@@ -175,14 +175,14 @@ export default function LiquidacionesView() {
 
         {/* Filtro Cliente */}
         <div>
-          <label className="block text-xs font-semibold mb-2" style={{ color: '#a0a0a0' }}>
+          <label className="block text-xs font-semibold mb-2" style={{ color: '#64748B' }}>
             Cliente
           </label>
           <select
             value={selectedCustomer}
             onChange={(e) => setSelectedCustomer(e.target.value)}
             className="w-full px-4 py-2 rounded-lg text-sm font-semibold transition-all"
-            style={{ backgroundColor: '#252525', color: '#f5f5f5', border: '1px solid #3a3a3a' }}
+            style={{ backgroundColor: '#FFFFFF', color: '#1E293B', border: '1px solid #E2E8F0' }}
           >
             <option value="all">Todos los clientes</option>
             {uniqueCustomers.map(customer => (
@@ -197,11 +197,11 @@ export default function LiquidacionesView() {
         <div className="flex items-end">
           <button
             onClick={() => setShowCreditNotes(!showCreditNotes)}
-            className="w-full px-4 py-2 rounded-lg text-sm font-semibold transition-all"
+            className="w-full px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200"
             style={{
-              backgroundColor: showCreditNotes ? 'rgba(239, 68, 68, 0.2)' : '#252525',
-              color: showCreditNotes ? '#ef4444' : '#f5f5f5',
-              border: `1px solid ${showCreditNotes ? '#ef4444' : '#3a3a3a'}`
+              backgroundColor: showCreditNotes ? 'rgba(239, 68, 68, 0.1)' : '#FFFFFF',
+              color: showCreditNotes ? '#EF4444' : '#1E293B',
+              border: `1px solid ${showCreditNotes ? '#EF4444' : '#E2E8F0'}`
             }}
           >
             {showCreditNotes ? '✓ ' : ''}Notas de Crédito ({deliveriesWithCreditNote.length})
@@ -211,40 +211,40 @@ export default function LiquidacionesView() {
 
       {/* Estadísticas */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-        <div className="p-4 rounded-xl text-center" style={{ backgroundColor: '#252525' }}>
-          <div className="text-2xl font-bold" style={{ color: '#f5f5f5' }}>{stats.total}</div>
-          <div className="text-xs" style={{ color: '#a0a0a0' }}>Total</div>
+        <div className="p-4 rounded-xl text-center shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+          <div className="text-2xl font-bold" style={{ color: '#1E293B' }}>{stats.total}</div>
+          <div className="text-xs" style={{ color: '#64748B' }}>Total</div>
         </div>
-        <div className="p-4 rounded-xl text-center" style={{ backgroundColor: '#252525' }}>
-          <div className="text-2xl font-bold" style={{ color: '#f59e0b' }}>{stats.dispatched}</div>
-          <div className="text-xs" style={{ color: '#a0a0a0' }}>Despachados</div>
+        <div className="p-4 rounded-xl text-center shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+          <div className="text-2xl font-bold" style={{ color: '#F59E0B' }}>{stats.dispatched}</div>
+          <div className="text-xs" style={{ color: '#64748B' }}>Despachados</div>
         </div>
-        <div className="p-4 rounded-xl text-center" style={{ backgroundColor: '#252525' }}>
-          <div className="text-2xl font-bold" style={{ color: '#3b82f6' }}>{stats.in_route}</div>
-          <div className="text-xs" style={{ color: '#a0a0a0' }}>En Ruta</div>
+        <div className="p-4 rounded-xl text-center shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+          <div className="text-2xl font-bold" style={{ color: '#7CB9E8' }}>{stats.in_route}</div>
+          <div className="text-xs" style={{ color: '#64748B' }}>En Ruta</div>
         </div>
-        <div className="p-4 rounded-xl text-center" style={{ backgroundColor: '#252525' }}>
-          <div className="text-2xl font-bold" style={{ color: '#10b981' }}>{stats.delivered}</div>
-          <div className="text-xs" style={{ color: '#a0a0a0' }}>Entregados</div>
+        <div className="p-4 rounded-xl text-center shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+          <div className="text-2xl font-bold" style={{ color: '#22C55E' }}>{stats.delivered}</div>
+          <div className="text-xs" style={{ color: '#64748B' }}>Entregados</div>
         </div>
-        <div className="p-4 rounded-xl text-center" style={{ backgroundColor: '#252525' }}>
-          <div className="text-2xl font-bold" style={{ color: '#ef4444' }}>{stats.returned}</div>
-          <div className="text-xs" style={{ color: '#a0a0a0' }}>Devueltos</div>
+        <div className="p-4 rounded-xl text-center shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+          <div className="text-2xl font-bold" style={{ color: '#EF4444' }}>{stats.returned}</div>
+          <div className="text-xs" style={{ color: '#64748B' }}>Devueltos</div>
         </div>
-        <div className="p-4 rounded-xl text-center" style={{ backgroundColor: '#252525' }}>
-          <div className="text-2xl font-bold" style={{ color: '#f59e0b' }}>{stats.pending_payment}</div>
-          <div className="text-xs" style={{ color: '#a0a0a0' }}>Pend. Pago</div>
+        <div className="p-4 rounded-xl text-center shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+          <div className="text-2xl font-bold" style={{ color: '#F59E0B' }}>{stats.pending_payment}</div>
+          <div className="text-xs" style={{ color: '#64748B' }}>Pend. Pago</div>
         </div>
-        <div className="p-4 rounded-xl text-center" style={{ backgroundColor: '#252525' }}>
-          <div className="text-lg font-bold" style={{ color: '#10b981' }}>{formatPrice(stats.totalCollected)}</div>
-          <div className="text-xs" style={{ color: '#a0a0a0' }}>Recaudado</div>
+        <div className="p-4 rounded-xl text-center shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+          <div className="text-lg font-bold" style={{ color: '#22C55E' }}>{formatPrice(stats.totalCollected)}</div>
+          <div className="text-xs" style={{ color: '#64748B' }}>Recaudado</div>
         </div>
       </div>
 
       {/* Tabla de Notas de Crédito */}
       {showCreditNotes && deliveriesWithCreditNote.length > 0 && (
-        <div className="p-6 rounded-xl" style={{ backgroundColor: '#252525', border: '2px solid #ef4444' }}>
-          <h2 className="text-lg font-bold mb-4" style={{ color: '#ef4444' }}>
+        <div className="p-6 rounded-xl shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '2px solid #EF4444' }}>
+          <h2 className="text-lg font-bold mb-4" style={{ color: '#EF4444' }}>
             📋 Notas de Crédito
           </h2>
           <div className="space-y-3">
@@ -252,40 +252,40 @@ export default function LiquidacionesView() {
               <div
                 key={delivery.id}
                 className="p-4 rounded-lg"
-                style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)' }}
+                style={{ backgroundColor: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.2)' }}
               >
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <div className="font-bold text-sm" style={{ color: '#f5f5f5' }}>
+                    <div className="font-bold text-sm" style={{ color: '#1E293B' }}>
                       {delivery.creditNote?.id} - {delivery.order.orderNumber}
                     </div>
-                    <div className="text-xs" style={{ color: '#a0a0a0' }}>
+                    <div className="text-xs" style={{ color: '#64748B' }}>
                       {delivery.order.customer.name}
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold" style={{ color: '#ef4444' }}>
+                    <div className="font-bold" style={{ color: '#EF4444' }}>
                       {formatPrice(delivery.creditNote?.amount || 0)}
                     </div>
-                    <div className="text-xs" style={{ color: '#a0a0a0' }}>
+                    <div className="text-xs" style={{ color: '#64748B' }}>
                       {delivery.creditNote && format(delivery.creditNote.createdAt, "d MMM HH:mm", { locale: es })}
                     </div>
                   </div>
                 </div>
                 <div className="space-y-1">
                   <div className="text-xs">
-                    <span style={{ color: '#a0a0a0' }}>Motivo: </span>
-                    <span style={{ color: '#f5f5f5' }}>{delivery.creditNote?.reason}</span>
+                    <span style={{ color: '#64748B' }}>Motivo: </span>
+                    <span style={{ color: '#1E293B' }}>{delivery.creditNote?.reason}</span>
                   </div>
                   {delivery.creditNote?.description && (
                     <div className="text-xs">
-                      <span style={{ color: '#a0a0a0' }}>Descripción: </span>
-                      <span style={{ color: '#f5f5f5' }}>{delivery.creditNote.description}</span>
+                      <span style={{ color: '#64748B' }}>Descripción: </span>
+                      <span style={{ color: '#1E293B' }}>{delivery.creditNote.description}</span>
                     </div>
                   )}
                   <div className="text-xs">
-                    <span style={{ color: '#a0a0a0' }}>Autorizado por: </span>
-                    <span style={{ color: '#f5f5f5' }}>{delivery.creditNote?.authorizedBy}</span>
+                    <span style={{ color: '#64748B' }}>Autorizado por: </span>
+                    <span style={{ color: '#1E293B' }}>{delivery.creditNote?.authorizedBy}</span>
                   </div>
                 </div>
               </div>
@@ -295,49 +295,49 @@ export default function LiquidacionesView() {
       )}
 
       {/* Tabla de Entregas */}
-      <div className="p-6 rounded-xl" style={{ backgroundColor: '#252525' }}>
-        <h2 className="text-lg font-bold mb-4" style={{ color: '#f5f5f5', letterSpacing: '-0.5px' }}>
+      <div className="p-6 rounded-xl shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }}>
+        <h2 className="text-lg font-bold mb-4" style={{ color: '#1E293B', letterSpacing: '-0.5px' }}>
           Entregas ({filteredDeliveries.length})
         </h2>
 
         {filteredDeliveries.length === 0 ? (
-          <div className="text-center py-8" style={{ color: '#a0a0a0' }}>
+          <div className="text-center py-8" style={{ color: '#64748B' }}>
             No hay entregas que coincidan con los filtros
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr style={{ borderBottom: '2px solid #3a3a3a' }}>
-                  <th className="text-left py-3 px-2" style={{ color: '#a0a0a0', fontWeight: 600 }}>Pedido</th>
-                  <th className="text-left py-3 px-2" style={{ color: '#a0a0a0', fontWeight: 600 }}>Cliente</th>
-                  <th className="text-left py-3 px-2" style={{ color: '#a0a0a0', fontWeight: 600 }}>Zona</th>
-                  <th className="text-left py-3 px-2" style={{ color: '#a0a0a0', fontWeight: 600 }}>Mensajero</th>
-                  <th className="text-left py-3 px-2" style={{ color: '#a0a0a0', fontWeight: 600 }}>Estado</th>
-                  <th className="text-left py-3 px-2" style={{ color: '#a0a0a0', fontWeight: 600 }}>Pago</th>
-                  <th className="text-right py-3 px-2" style={{ color: '#a0a0a0', fontWeight: 600 }}>Monto</th>
-                  <th className="text-center py-3 px-2" style={{ color: '#a0a0a0', fontWeight: 600 }}>N/C</th>
-                  <th className="text-center py-3 px-2" style={{ color: '#a0a0a0', fontWeight: 600 }}>Acciones</th>
+                <tr style={{ borderBottom: '2px solid #E2E8F0' }}>
+                  <th className="text-left py-3 px-2" style={{ color: '#64748B', fontWeight: 600 }}>Pedido</th>
+                  <th className="text-left py-3 px-2" style={{ color: '#64748B', fontWeight: 600 }}>Cliente</th>
+                  <th className="text-left py-3 px-2" style={{ color: '#64748B', fontWeight: 600 }}>Zona</th>
+                  <th className="text-left py-3 px-2" style={{ color: '#64748B', fontWeight: 600 }}>Mensajero</th>
+                  <th className="text-left py-3 px-2" style={{ color: '#64748B', fontWeight: 600 }}>Estado</th>
+                  <th className="text-left py-3 px-2" style={{ color: '#64748B', fontWeight: 600 }}>Pago</th>
+                  <th className="text-right py-3 px-2" style={{ color: '#64748B', fontWeight: 600 }}>Monto</th>
+                  <th className="text-center py-3 px-2" style={{ color: '#64748B', fontWeight: 600 }}>N/C</th>
+                  <th className="text-center py-3 px-2" style={{ color: '#64748B', fontWeight: 600 }}>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredDeliveries.map(delivery => (
                   <tr
                     key={delivery.id}
-                    className="transition-all"
-                    style={{ borderBottom: '1px solid #3a3a3a' }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2a2a2a'}
+                    className="transition-all duration-200"
+                    style={{ borderBottom: '1px solid #E2E8F0' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F8FAFC'}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <td className="py-3 px-2">
-                      <div className="font-semibold" style={{ color: '#C46849' }}>
+                      <div className="font-semibold" style={{ color: '#7CB9E8' }}>
                         {delivery.order.orderNumber}
                       </div>
-                      <div className="text-xs" style={{ color: '#a0a0a0' }}>
+                      <div className="text-xs" style={{ color: '#64748B' }}>
                         {format(delivery.dispatchedAt, "d MMM HH:mm", { locale: es })}
                       </div>
                     </td>
-                    <td className="py-3 px-2" style={{ color: '#f5f5f5' }}>
+                    <td className="py-3 px-2" style={{ color: '#1E293B' }}>
                       {delivery.order.customer.name}
                     </td>
                     <td className="py-3 px-2">
@@ -345,7 +345,7 @@ export default function LiquidacionesView() {
                         <span
                           className="text-xs px-2 py-1 rounded-full font-semibold"
                           style={{
-                            backgroundColor: `${zoneColors[delivery.order.customer.zone]}20`,
+                            backgroundColor: `${zoneColors[delivery.order.customer.zone]}15`,
                             color: zoneColors[delivery.order.customer.zone],
                           }}
                         >
@@ -353,14 +353,14 @@ export default function LiquidacionesView() {
                         </span>
                       )}
                     </td>
-                    <td className="py-3 px-2" style={{ color: '#f5f5f5' }}>
+                    <td className="py-3 px-2" style={{ color: '#1E293B' }}>
                       {delivery.messenger.name}
                     </td>
                     <td className="py-3 px-2">
                       <span
                         className="text-xs px-2 py-1 rounded-full font-semibold"
                         style={{
-                          backgroundColor: `${deliveryStatusColors[delivery.status]}20`,
+                          backgroundColor: `${deliveryStatusColors[delivery.status]}15`,
                           color: deliveryStatusColors[delivery.status],
                         }}
                       >
@@ -369,13 +369,13 @@ export default function LiquidacionesView() {
                     </td>
                     <td className="py-3 px-2">
                       {delivery.paymentMethod && (
-                        <span className="text-xs" style={{ color: '#d0d0d0' }}>
+                        <span className="text-xs" style={{ color: '#64748B' }}>
                           {paymentMethodNames[delivery.paymentMethod]}
                         </span>
                       )}
                     </td>
                     <td className="py-3 px-2 text-right">
-                      <div className="font-bold" style={{ color: delivery.collectedAmount ? '#10b981' : '#a0a0a0' }}>
+                      <div className="font-bold" style={{ color: delivery.collectedAmount ? '#22C55E' : '#64748B' }}>
                         {delivery.collectedAmount ? formatPrice(delivery.collectedAmount) : '-'}
                       </div>
                     </td>
@@ -388,17 +388,17 @@ export default function LiquidacionesView() {
                       {!delivery.creditNote && (
                         <button
                           onClick={() => handleOpenCreditNoteModal(delivery)}
-                          className="px-3 py-1 rounded-lg text-xs font-semibold transition-all"
+                          className="px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-200"
                           style={{
-                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                            color: '#ef4444',
-                            border: '1px solid rgba(239, 68, 68, 0.3)'
+                            backgroundColor: 'rgba(239, 68, 68, 0.08)',
+                            color: '#EF4444',
+                            border: '1px solid rgba(239, 68, 68, 0.2)'
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
+                            e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.15)';
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                            e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.08)';
                           }}
                         >
                           + N/C
@@ -417,18 +417,18 @@ export default function LiquidacionesView() {
       {showCreditNoteModal && selectedDelivery && (
         <div
           className="fixed inset-0 z-[70] flex items-center justify-center p-4"
-          style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
         >
           <div
             className="rounded-xl shadow-2xl max-w-md w-full p-6"
-            style={{ backgroundColor: '#252525' }}
+            style={{ backgroundColor: '#FFFFFF' }}
           >
             {/* Header */}
             <div className="mb-4">
-              <h2 className="text-xl font-bold mb-2" style={{ color: '#ef4444' }}>
+              <h2 className="text-xl font-bold mb-2" style={{ color: '#EF4444' }}>
                 Crear Nota de Crédito
               </h2>
-              <div className="text-sm" style={{ color: '#a0a0a0' }}>
+              <div className="text-sm" style={{ color: '#64748B' }}>
                 {selectedDelivery.order.orderNumber} - {selectedDelivery.order.customer.name}
               </div>
             </div>
@@ -437,14 +437,14 @@ export default function LiquidacionesView() {
             <div className="space-y-4">
               {/* Motivo */}
               <div>
-                <label className="block text-xs font-semibold mb-2" style={{ color: '#a0a0a0' }}>
-                  Motivo <span style={{ color: '#ef4444' }}>*</span>
+                <label className="block text-xs font-semibold mb-2" style={{ color: '#64748B' }}>
+                  Motivo <span style={{ color: '#EF4444' }}>*</span>
                 </label>
                 <select
                   value={creditNoteForm.reason}
                   onChange={(e) => setCreditNoteForm({ ...creditNoteForm, reason: e.target.value })}
                   className="w-full px-4 py-2 rounded-lg text-sm"
-                  style={{ backgroundColor: '#2a2a2a', color: '#f5f5f5', border: '1px solid #3a3a3a' }}
+                  style={{ backgroundColor: '#F8FAFC', color: '#1E293B', border: '1px solid #E2E8F0' }}
                 >
                   <option value="">Seleccionar motivo</option>
                   {creditNoteReasons.map(reason => (
@@ -456,8 +456,8 @@ export default function LiquidacionesView() {
               {/* Motivo personalizado (si eligió "Otro") */}
               {creditNoteForm.reason === 'Otro' && (
                 <div>
-                  <label className="block text-xs font-semibold mb-2" style={{ color: '#a0a0a0' }}>
-                    Especificar motivo <span style={{ color: '#ef4444' }}>*</span>
+                  <label className="block text-xs font-semibold mb-2" style={{ color: '#64748B' }}>
+                    Especificar motivo <span style={{ color: '#EF4444' }}>*</span>
                   </label>
                   <input
                     type="text"
@@ -465,15 +465,15 @@ export default function LiquidacionesView() {
                     onChange={(e) => setCreditNoteForm({ ...creditNoteForm, customReason: e.target.value })}
                     placeholder="Escribe el motivo..."
                     className="w-full px-4 py-2 rounded-lg text-sm"
-                    style={{ backgroundColor: '#2a2a2a', color: '#f5f5f5', border: '1px solid #3a3a3a' }}
+                    style={{ backgroundColor: '#F8FAFC', color: '#1E293B', border: '1px solid #E2E8F0' }}
                   />
                 </div>
               )}
 
               {/* Monto */}
               <div>
-                <label className="block text-xs font-semibold mb-2" style={{ color: '#a0a0a0' }}>
-                  Monto <span style={{ color: '#ef4444' }}>*</span>
+                <label className="block text-xs font-semibold mb-2" style={{ color: '#64748B' }}>
+                  Monto <span style={{ color: '#EF4444' }}>*</span>
                 </label>
                 <input
                   type="number"
@@ -481,16 +481,16 @@ export default function LiquidacionesView() {
                   onChange={(e) => setCreditNoteForm({ ...creditNoteForm, amount: e.target.value })}
                   placeholder="0"
                   className="w-full px-4 py-2 rounded-lg text-sm font-semibold"
-                  style={{ backgroundColor: '#2a2a2a', color: '#f5f5f5', border: '1px solid #3a3a3a' }}
+                  style={{ backgroundColor: '#F8FAFC', color: '#1E293B', border: '1px solid #E2E8F0' }}
                 />
-                <div className="text-xs mt-1" style={{ color: '#a0a0a0' }}>
+                <div className="text-xs mt-1" style={{ color: '#64748B' }}>
                   Valor del pedido: {formatPrice(selectedDelivery.order.totalValue)}
                 </div>
               </div>
 
               {/* Descripción adicional */}
               <div>
-                <label className="block text-xs font-semibold mb-2" style={{ color: '#a0a0a0' }}>
+                <label className="block text-xs font-semibold mb-2" style={{ color: '#64748B' }}>
                   Descripción adicional (opcional)
                 </label>
                 <textarea
@@ -499,7 +499,7 @@ export default function LiquidacionesView() {
                   placeholder="Detalles adicionales..."
                   rows={3}
                   className="w-full px-4 py-2 rounded-lg text-sm resize-none"
-                  style={{ backgroundColor: '#2a2a2a', color: '#f5f5f5', border: '1px solid #3a3a3a' }}
+                  style={{ backgroundColor: '#F8FAFC', color: '#1E293B', border: '1px solid #E2E8F0' }}
                 />
               </div>
             </div>
@@ -508,29 +508,29 @@ export default function LiquidacionesView() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={handleCloseCreditNoteModal}
-                className="flex-1 py-3 rounded-lg text-sm font-semibold transition-all"
+                className="flex-1 py-3 rounded-lg text-sm font-semibold transition-all duration-200"
                 style={{
                   backgroundColor: 'transparent',
-                  border: '1px solid #3a3a3a',
-                  color: '#a0a0a0'
+                  border: '1px solid #E2E8F0',
+                  color: '#64748B'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#ef4444';
-                  e.currentTarget.style.color = '#ef4444';
+                  e.currentTarget.style.borderColor = '#EF4444';
+                  e.currentTarget.style.color = '#EF4444';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = '#3a3a3a';
-                  e.currentTarget.style.color = '#a0a0a0';
+                  e.currentTarget.style.borderColor = '#E2E8F0';
+                  e.currentTarget.style.color = '#64748B';
                 }}
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSaveCreditNote}
-                className="flex-1 py-3 rounded-lg text-sm font-semibold text-white transition-all"
-                style={{ backgroundColor: '#ef4444' }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#dc2626'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ef4444'}
+                className="flex-1 py-3 rounded-lg text-sm font-semibold text-white transition-all duration-200"
+                style={{ backgroundColor: '#EF4444' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#DC2626'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#EF4444'}
               >
                 Crear Nota de Crédito
               </button>
